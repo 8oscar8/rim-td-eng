@@ -25,7 +25,7 @@ export class SpriteManager {
       'Pilum': 'assets/javelins.webp',
       'Recurve Bow': 'assets/recurvebow.webp',
       'frag_grenade': 'assets/fraggrenades.webp', 
-      'molotov': 'assets/molotov.png', 
+      'molotov': 'assets/화염병.webp', 
       'Revolver': 'assets/revolver.webp',
       'Autopistol': 'assets/autopistol.webp',
       'Heavy SMG': 'assets/smg.webp',
