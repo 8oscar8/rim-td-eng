@@ -292,8 +292,9 @@ class App {
 
   handleMouseMove(e) {
     const rect = this.renderer.canvas.getBoundingClientRect();
-    this.mousePos.x = (e.clientX - rect.left) * (this.renderer.canvas.width / rect.width);
-    this.mousePos.y = (e.clientY - rect.top) * (this.renderer.canvas.height / rect.height);
+    // [Fix] DPR 스케일링이 적용된 경우 논리적 좌표(CSS 픽셀)만 사용해야 함
+    this.mousePos.x = (e.clientX - rect.left);
+    this.mousePos.y = (e.clientY - rect.top);
   }
 
   handleCanvasClick(e) {
@@ -301,8 +302,8 @@ class App {
 
     // 마우스 위치 재계산 (이벤트 객체 기준)
     const rect = this.renderer.canvas.getBoundingClientRect();
-    const clickX = (e.clientX - rect.left) * (this.renderer.canvas.width / rect.width);
-    const clickY = (e.clientY - rect.top) * (this.renderer.canvas.height / rect.height);
+    const clickX = (e.clientX - rect.left);
+    const clickY = (e.clientY - rect.top);
     
     // 아이템 타겟팅 모드 처리
     if (this.isItemTargeting && this.pendingItemId) {
@@ -1880,7 +1881,7 @@ class App {
   triggerHowlingBladeReward() {
     console.log("[App] Triggering Howling Blade Reward Sequence...");
     try {
-        const result = GachaSystem.createSpecificWeapon('Monomolecular Blade', 'legendary', 'None');
+        const result = GachaSystem.createSpecificWeapon('Persona Mono Sword', 'legendary', 'None');
         
         // 1. 강제 일시정지 해제 및 배치 모드 설정
         this.state.isPaused = false;

@@ -9,20 +9,39 @@ export class Renderer {
 
     // 인게임 배경 이미지 로드
     this.bgImage = new Image();
-    this.bgImage.src = 'map.png';
     this.bgImageLoaded = false;
     this.bgImage.onload = () => {
       this.bgImageLoaded = true;
     };
+    
+    // 초기 배경 설정 (기본 1번)
+    this.changeBackground('assets/backgrounds/user_choice_1.png');
+  }
+
+  // 실시간 배경 교체 함수
+  changeBackground(path) {
+    this.bgImageLoaded = false;
+    this.bgImage.src = path;
   }
 
   resize() {
     const parent = this.canvas.parentElement;
     if (parent) {
-      this.canvas.width = parent.clientWidth;
-      this.canvas.height = parent.clientHeight;
-      this.width = this.canvas.width;
-      this.height = this.canvas.height;
+      // [Optimization] 고해상도 디스플레이(DPR) 대응
+      const dpr = window.devicePixelRatio || 1;
+      const rect = parent.getBoundingClientRect();
+      
+      this.canvas.width = rect.width * dpr;
+      this.canvas.height = rect.height * dpr;
+      
+      this.ctx.scale(dpr, dpr);
+      
+      this.width = rect.width;
+      this.height = rect.height;
+      
+      // CSS 크기는 부모에 맞춤
+      this.canvas.style.width = rect.width + 'px';
+      this.canvas.style.height = rect.height + 'px';
     }
   }
 
@@ -47,15 +66,17 @@ export class Renderer {
     const centerY = this.height / 2;
     const radius = 320;
 
-    // 원형 트랙 그리기 (그라데이션 및 네온 효과)
+    // 원형 트랙 그리기 (림월드 스타일의 자연스러운 다져진 길/그림자 효과)
     this.ctx.beginPath();
     this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
     
-    this.ctx.strokeStyle = 'rgba(0, 242, 255, 0.1)';
-    this.ctx.lineWidth = 45;
+    // 1. 길의 바닥면 (흙이 다져진 듯한 어두운 느낌)
+    this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)'; 
+    this.ctx.lineWidth = 60; // 폭을 넓혀서 안정감 부여
     this.ctx.stroke();
 
-    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+    // 2. 중앙 가이드 라인 (배치를 돕기 위한 아주 미세한 하이라이트)
+    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
     this.ctx.lineWidth = 2;
     this.ctx.stroke();
     

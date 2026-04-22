@@ -124,6 +124,10 @@ export class UIManager {
     this.lbCloseBtn = document.getElementById('lb-modal-close-btn');
     this.settingLbBtn = document.getElementById('settings-lb-btn');
     this.settingGiveUpBtn = document.getElementById('settings-giveup-btn');
+    
+    // 11. 배경 선택 버튼
+    this.bg1Btn = document.getElementById('setting-bg-1');
+    this.bg2Btn = document.getElementById('setting-bg-2');
   }
 
   initEvents() {
@@ -234,6 +238,28 @@ export class UIManager {
             if (this.app.saveSettings) this.app.saveSettings(); // 설정 저장
             
             this.addMiniNotification(`Notifications have been ${isChecked ? 'enabled' : 'disabled'}.`, 'info');
+        };
+    }
+
+    // 배경 선택 이벤트 바인딩
+    if (this.bg1Btn && this.bg2Btn) {
+        this.bg1Btn.onclick = () => {
+            if (this.app.renderer) {
+                this.app.renderer.changeBackground('assets/backgrounds/user_choice_1.png');
+                this.bg1Btn.classList.add('active');
+                this.bg2Btn.classList.remove('active');
+                this.addMiniNotification("Background changed to Arid Wasteland.", 'info');
+                SoundManager.playClick();
+            }
+        };
+        this.bg2Btn.onclick = () => {
+            if (this.app.renderer) {
+                this.app.renderer.changeBackground('assets/backgrounds/user_choice_2.png');
+                this.bg2Btn.classList.add('active');
+                this.bg1Btn.classList.remove('active');
+                this.addMiniNotification("Background changed to Lush Shrubland.", 'info');
+                SoundManager.playClick();
+            }
         };
     }
 

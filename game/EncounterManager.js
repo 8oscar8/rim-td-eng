@@ -523,7 +523,7 @@ export class EncounterManager {
 
   // 6. 고대의 유물 (전설템 획득)
   handleAncientRelic(event) {
-    const relics = ['제우스망치', '플라즈마검', '단분자검'];
+    const relics = ['Zeushammer', 'Plasma Sword', 'Mono Sword'];
     const pName = relics[Math.floor(Math.random() * relics.length)];
     
     // 강제로 전설 품질로 생성
@@ -531,7 +531,7 @@ export class EncounterManager {
         weaponName: pName,
         weaponData: WEAPON_DB[pName],
         quality: 'legendary',
-        material: '플라스틸'
+        material: 'Plasteel'
     };
 
     if (result.weaponData) {
