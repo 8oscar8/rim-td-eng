@@ -1,48 +1,43 @@
-# 🛡️ 정착지 보안 프로토콜: 버전 관리 및 자동 백업 워크플로우
+# 🛡️ Settlement Security Protocol: Version Control & Auto-Backup Workflow
 
-개발 중 발생할 수 있는 데이터 손실이나 예기치 못한 시스템 오류를 방지하기 위해 **Git(깃)**을 활용한 강력한 버전 관리 체계를 구축합니다.
+To prevent data loss during development or unexpected system errors, we have established a robust version control system using **Git**.
 
----
+## 1. Basic Git Operation Strategy
 
-## 1. 깃(Git) 기본 운용 전략
+### 📂 Commit Upon Feature Completion
+Every time a meaningful functional change (e.g., research system overhaul, dispatch bonus addition, etc.) is completed, the current state is recorded in the local repository.
 
-### 📂 매 피처(Feature) 완료 시 커밋
-하나의 유의미한 기능 변경(예: 연구 시스템 개편, 파견 보너스 추가 등)이 완료될 때마다 로컬 저장소에 현재 상태를 박제합니다.
-
-- **방법**: 안티그래비티 대화 중 "커밋해줘"라고 요청하거나, 터미널에서 아래 명령어를 실행합니다.
-  ```powershell
+- **Method**: Ask Antigravity "Commit this" during conversation, or run the following command in the terminal:
+  
+  ```bash
   git add .
-  git commit -m "feat: [기능 요약]"
+  git commit -m "feat: [Feature Summary]"
   ```
 
-### ⏪ 문제 발생 시 롤백 (복구)
-코드가 꼬이거나 이상이 생기면 언제든지 작동하던 시점으로 되돌릴 수 있습니다.
-- **최직전 상태로 복구**: `git checkout .` (저장하지 않은 변경사항 삭제)
-- **특정 시점(커밋)으로 복구**: `git reset --hard [커밋ID]`
+### ⏪ Rollback (Recovery) When Problems Occur
+If the code becomes tangled or issues arise, you can return to a working point at any time.
 
----
+- **Restore to most recent state**: `git checkout .` (Deletes unsaved changes)
+- **Restore to specific point (commit)**: `git reset --hard [CommitID]`
 
-## 2. 안티그래비티 전용 태스크 워크플로우 (안전 장칭)
+## 2. Antigravity-Exclusive Task Workflow (Safety Mechanisms)
 
-안티그래비티와 협업할 때 다음 단계를 준수하여 사고를 미연에 방지합니다.
+Adhere to the following steps when collaborating with Antigravity to prevent accidents.
 
-1.  **[Git 상시 활성화]**: 작업 시작 전 `git init` 완료 (이미 완료됨).
-2.  **[작성 및 검증]**: 기능 구현 및 로컬 테스트 완료.
-3.  **[정기 박제]**: 작업 세션이 끝날 때 혹은 요청 시 안티그래비티가 커밋 수행.
-4.  **[백업 폴더 활용]**: 중요 로직 수정 전 `temp_backup/` 폴더에 임시 복사본 생성 (필요시).
+1.  **[Git Always Active]**: Ensure `git init` is complete before starting work (Already completed).
+2.  **[Implementation & Verification]**: Complete feature implementation and local testing.
+3.  **[Regular Snapshot]**: Antigravity performs a commit at the end of a work session or upon request.
+4.  **[Backup Folder Usage]**: Create temporary copies in the `temp_backup/` folder before major logic modifications (if necessary).
 
----
+## 3. Remote Backup (GitHub Recommended)
 
-## 3. 원격 백업 (GitHub 권장)
+To prepare for physical hardware failure or file loss on your local PC, connecting to an external remote repository is essential.
 
-로컬 PC의 물리적 고장 및 파일 증발 사고까지 대비하려면 외부 원격 저장소 연결이 필수입니다.
-- **GitHub 저장소 생성 후**:
-  ```powershell
-  git remote add origin [내-레포지토리-주소]
+- **After creating a GitHub repository**:
+  
+  ```bash
+  git remote add origin [Your-Repo-URL]
   git push -u origin main
   ```
 
----
-
-> [!IMPORTANT]
-> **안티그래비티의 약속:** 앞으로 제가 큰 수정을 완료할 때마다 유저님께 "지금 상태를 커밋할까요?"라고 먼저 여쭤보겠습니다. 승인해 주시면 현재 상태를 안전하게 저장소에 기록하여 만약의 사태에 완벽히 대비하겠습니다.
+> **Antigravity's Promise:** Every time I complete a major modification, I will first ask, "Shall I commit the current state?" Upon your approval, I will safely record the current state in the repository to perfectly prepare for any situation.

@@ -1,7 +1,7 @@
 /**
  * WaveHPData.js
- * 1라운드부터 100라운드까지의 일반 몬스터 체력을 직접 관리하는 리스트입니다.
- * 이 파일의 수치를 수정하여 게임 난이도를 조절할 수 있습니다.
+ * A list that directly manages the health (HP) of normal monsters from Wave 1 to Wave 100.
+ * You can adjust the game difficulty by modifying the values in this file.
  */
 export const WAVE_HP_DATA = [
     100, 115, 132, 152, 175, 201, 231, 265, 305, 350,            // 1-10
