@@ -1509,13 +1509,13 @@ export class UIManager {
     // 8. 특수 제작 버튼 상태 업데이트 (자원 부족 시 비활성화)
     if (this.specialCraftBtns) {
         const specialCosts = {
-            '파쇄 수류탄': { silver: 300, steel: 150, component: 5 },
-            '펄스 수류탄': { silver: 500, steel: 250, plasteel: 20, component: 10 },
-            '화염병': { silver: 350, wood: 100, component: 5 },
-            '연막 발사기': { silver: 400, steel: 180, component: 5 },
-            '독소 수류탄': { silver: 1000, steel: 400, jade: 5, component: 15 },
-            '정신충격창': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
-            '고주스': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 }
+            'frag_grenade': { silver: 300, steel: 150, component: 5 },
+            'pulse_grenade': { silver: 500, steel: 250, plasteel: 20, component: 10 },
+            'molotov': { silver: 350, wood: 100, component: 5 },
+            'smoke_launcher': { silver: 400, steel: 180, component: 5 },
+            'toxin_grenade': { silver: 1000, steel: 400, jade: 5, component: 15 },
+            'psychic_lance': { silver: 1500, uranium: 100, plasteel: 50, jade: 10, component: 20 },
+            'go_juice': { food: 500, herbalMedicine: 50, uranium: 20, component: 10 }
         };
 
         this.specialCraftBtns.forEach(btn => {
@@ -2237,22 +2237,22 @@ export class UIManager {
     // [New] 정착지 상세 데이터 출력
     const prodBonus = (state.upgrades.logging + state.upgrades.mining + state.upgrades.farming) * 5; // 레벨당 5% 가정
 
-    console.log("정착지 리포트 생성:", { 
-        최종웨이브: finalWave,
-        승리여부: isVictory,
-        연구: stats.totalResearchCompleted, 
-        최대인구: stats.maxPopulationReached, 
-        생산보너스: prodBonus, 
-        평균무드: avgMood 
+    console.log("Settlement Report Generated:", { 
+        finalWave: finalWave,
+        isVictory: isVictory,
+        research: stats.totalResearchCompleted, 
+        maxPop: stats.maxPopulationReached, 
+        productionBonus: prodBonus, 
+        averageMood: avgMood 
     });
 
-    document.getElementById('res-total-research').textContent = `${stats.totalResearchCompleted || 0}건`;
-    document.getElementById('res-max-pop').textContent = `${stats.maxPopulationReached || 3}명`;
+    document.getElementById('res-total-research').textContent = `${stats.totalResearchCompleted || 0} completed`;
+    document.getElementById('res-max-pop').textContent = `${stats.maxPopulationReached || 3} people`;
     document.getElementById('res-prod-bonus').textContent = `+${prodBonus}%`;
     document.getElementById('res-avg-mood').textContent = `${avgMood}%`;
-    document.getElementById('res-towers-built').textContent = `${stats.towersBuilt || 0}회`;
+    document.getElementById('res-towers-built').textContent = `${stats.towersBuilt || 0} times`;
 
-    const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (없음)';
+    const maxDmgStr = stats.maxDamage > 0 ? `${stats.maxDamage.toLocaleString()} (${stats.maxDamageUnit})` : '0 (None)';
     document.getElementById('res-max-dmg').textContent = maxDmgStr;
 
     // 2. 생존 시간 계산 (분:초)
@@ -2313,24 +2313,24 @@ export class UIManager {
     
     if (submitBtn && nameInput) {
         submitBtn.disabled = false;
-        submitBtn.textContent = "기록 등록";
+        submitBtn.textContent = "Register Record";
         nameInput.disabled = false;
-        nameInput.value = ""; // 초기화
+        nameInput.value = ""; // Initialize
 
         submitBtn.onclick = async () => {
             const name = nameInput.value.trim();
             if (!name) {
-                this.addMiniNotification("정착지 이름을 입력해주세요!", "failure");
+                this.addMiniNotification("Please enter a settlement name!", "failure");
                 return;
             }
             
             submitBtn.disabled = true;
-            submitBtn.textContent = "등록 중...";
+            submitBtn.textContent = "Registering...";
             
-            // App의 submitScore 호출 (정착지 위력 점수 전송)
+            // Call App's submitScore (Send settlement power score)
             await window.app.submitScore(name, this.lastCalculatedScore, finalWave);
             
-            submitBtn.textContent = "등록 완료";
+            submitBtn.textContent = "Registration Complete";
             nameInput.disabled = true;
         };
     }
@@ -2346,9 +2346,9 @@ export class UIManager {
         if (s.idlePopulation > 0) {
             s.workers[type]++;
             s.idlePopulation--;
-            this.addMiniNotification(`${this.getJobName(type)}에 정착민 1명을 배정했습니다.`, "info");
+            this.addMiniNotification(`Assigned 1 colonist to ${this.getJobName(type)}.`, "info");
             
-            // [Sound] 작업별 전용 사운드 재생
+            // [Sound] Job-specific sounds
             if (type === 'logging') {
                 SoundManager.playSFX('assets/audio/벌목.ogg', 0.6);
             } else if (type === 'farming') {
@@ -2361,14 +2361,14 @@ export class UIManager {
                 SoundManager.playSFX('assets/audio/BuyThing.ogg', 0.6);
             }
         } else {
-            this.addMiniNotification("대기 중인 정착민이 없습니다!", "failure");
+            this.addMiniNotification("No colonists waiting!", "failure");
         }
     } else {
-        // 해제 (-)
+        // Unassign (-)
         if (s.workers[type] > 0) {
             s.workers[type]--;
             s.idlePopulation++;
-            this.addMiniNotification(`${this.getJobName(type)}에서 정착민 1명을 철수시켰습니다.`, "info");
+            this.addMiniNotification(`Withdrew 1 colonist from ${this.getJobName(type)}.`, "info");
         }
     }
     this.updateDisplays(s);
@@ -2380,7 +2380,7 @@ export class UIManager {
   }
 
   getJobName(type) {
-    const names = { farming: '농사', mining: '채광', logging: '벌목', research: '연구', trading: '교역' };
+    const names = { farming: 'Farming', mining: 'Mining', logging: 'Logging', research: 'Research', trading: 'Trading' };
     return names[type] || type;
   }
 
