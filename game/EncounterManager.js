@@ -111,7 +111,7 @@ export class EncounterManager {
 
     // 2. 종료된 이벤트 처리
     finishedEvents.forEach(ev => {
-      this.app.ui.addMiniNotification(`이벤트 종료: ${ev.name}`, 'info');
+      this.app.ui.addMiniNotification(`Event ended: ${ev.name}`, 'info');
       if (ev.id === 'luciferium') this.app.destroyRandomTower();
       
       // [New] 정신 이상 극복 시 카타르시스 보상 지급
@@ -176,7 +176,7 @@ export class EncounterManager {
   // [New] 카타르시스 보상 지급 (정신 이상 극복 시)
   applyCatharsis() {
     this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 60);
-    this.app.ui.addMiniNotification("정신을 차렸습니다! 카타르시스 효과로 무드가 대폭 상승합니다. (+60%)", "jackpot");
+    this.app.ui.addMiniNotification("Catharsis! Mood greatly increased. (+60%)", "jackpot");
     SoundManager.playSuccess();
   }
 
@@ -191,9 +191,9 @@ export class EncounterManager {
     }
 
     const breakEvents = [
-      { id: 'pyromaniac', name: '정신 이상: 방화광', desc: '정착민이 정신적 한계에 도달하여 방화 광기에 빠졌습니다! 창고의 자원 일부를 불태웁니다.' },
-      { id: 'labor_strike', name: '정신 이상: 파업', desc: '심각한 우울증으로 인해 모든 활동을 거부하고 파업에 돌입했습니다! 60초간 상점과 배치가 금지됩니다.' },
-      { id: 'confused_wander', name: '정신 이상: 정신 방황', desc: '정신적인 충격으로 인해 멍한 상태에 빠졌습니다! 60초간 타워들의 모든 화력이 10% 감소합니다.' }
+      { id: 'pyromaniac', name: 'Mental Break: Pyromaniac', desc: 'A colonist has reached their breaking point and is on a fire-starting spree! Some resources in storage have been burned.' },
+      { id: 'labor_strike', name: 'Mental Break: Strike', desc: 'Severe depression has led to a total refusal of work! Shopping and deployment are prohibited for 60 seconds.' },
+      { id: 'confused_wander', name: 'Mental Break: Confused Wander', desc: 'Mental shock has caused a dazed state! All tower firepower is reduced by 10% for 60 seconds.' }
     ];
     
     const selected = breakEvents[Math.floor(Math.random() * breakEvents.length)];
@@ -209,81 +209,81 @@ export class EncounterManager {
   triggerRandomEvent() {
     const events = [
       { 
-        name: '상선 통과', weight: 12, type: 'positive', id: 'trade_ship',
-        desc: "무역 상선이 궤도를 통과하며 보존된 무기 상자를 투하했습니다! Rare 이상의 무기를 획득합니다."
+        name: 'Trade Ship', weight: 12, type: 'positive', id: 'trade_ship',
+        desc: "A trade ship is passing in orbit and has dropped a preserved weapon crate! You have acquired a Rare or higher weapon."
       },
       { 
-        name: '화물 낙하기', weight: 15, type: 'positive', id: 'cargo_pods',
-        desc: "궤도상에서 정체를 알 수 없는 화물 보급품들이 낙하했습니다! 유용한 자원들을 확보했습니다."
+        name: 'Cargo Pods', weight: 15, type: 'positive', id: 'cargo_pods',
+        desc: "Unknown cargo supplies have crashed from orbit! Useful resources have been secured."
       },
       { 
-        name: '공동체 합류', weight: 10, type: 'positive', id: 'wanderer_joins',
-        desc: "지나 가던 길잃은 정착민이 우리 정착지의 안전함에 이끌려 합류를 요청했습니다! 인구가 1 증가합니다."
+        name: 'Wanderer Joins', weight: 10, type: 'positive', id: 'wanderer_joins',
+        desc: "A stray wanderer, attracted by the safety of our settlement, has requested to join! Population increased by 1."
       },
       { 
-        name: '암브로시아 발아', weight: 12, type: 'positive', id: 'ambrosia_sprout',
-        desc: "정착지 근처에서 희귀한 암브로시아 나무들이 발아했습니다! 120초 동안 모든 은화(Silver) 획득량이 2배로 증가합니다."
+        name: 'Ambrosia Sprout', weight: 12, type: 'positive', id: 'ambrosia_sprout',
+        desc: "Rare ambrosia trees have sprouted near the settlement! All Silver gain is doubled for 120 seconds."
       },
       { 
-        name: '정신적 안정파', weight: 12, type: 'positive', id: 'psychic_soothe',
-        desc: "행성 전체에 기분 좋은 정신적 안정파가 흐릅니다! 60초 동안 모든 아군 유닛의 공격 속도가 대폭 상승합니다."
+        name: 'Psychic Soothe', weight: 12, type: 'positive', id: 'psychic_soothe',
+        desc: "A pleasant psychic soothe is flowing across the planet! All ally units gain a massive attack speed bonus for 60 seconds."
       },
       { 
-        name: '고대의 유물', weight: 5, type: 'positive', id: 'ancient_relic',
-        desc: "미개척지에서 고대 기술로 만들어진 강력한 유물이 발견되었습니다! 전설적인 근접 무기 중 하나를 확보합니다."
+        name: 'Ancient Relic', weight: 5, type: 'positive', id: 'ancient_relic',
+        desc: "A powerful ancient relic has been discovered in the frontier! You have secured one of the legendary melee weapons."
       },
       { 
-        name: '작업 영감', weight: 10, type: 'positive', id: 'work_inspiration',
-        desc: "정착민들이 특정 작업에 깊은 영감을 얻었습니다! 90초 동안 무작위 한 종류의 작업 수득량이 3배로 증가합니다."
+        name: 'Work Inspiration', weight: 10, type: 'positive', id: 'work_inspiration',
+        desc: "Colonists have gained a deep inspiration for a specific task! Resource yield for a random task is tripled for 90 seconds."
       },
       { 
-        name: '루시페륨 투여', weight: 10, type: 'negative', id: 'luciferium',
-        desc: "금지된 약물인 루시페륨을 전원에게 투여했습니다! 60초간 폭발적인 화력을 얻지만, 약효가 끝나면 정착민 한 명이 미쳐버려 타워 하나가 무작위로 파괴됩니다."
+        name: 'Luciferium Administered', weight: 10, type: 'negative', id: 'luciferium',
+        desc: "Everyone has been administered Luciferium! Gain explosive firepower for 60 seconds, but once the effect ends, a colonist will go insane and a random tower will be destroyed."
       },
       { 
-        name: '독성 낙진', weight: 10, type: 'negative', id: 'toxic_fallout',
-        desc: "지독한 독성 낙진이 대기를 뒤덮었습니다! 외부 활동이 불가능해져 모든 파견 임무가 60초간 전면 중단됩니다."
+        name: 'Toxic Fallout', weight: 10, type: 'negative', id: 'toxic_fallout',
+        desc: "A thick toxic fallout has covered the atmosphere! Outdoor activities are impossible; all assignments are suspended for 60 seconds."
       },
       { 
-        name: '흑점 폭발', weight: 15, type: 'negative', id: 'solar_flare',
-        desc: "강렬한 태양 활동으로 인해 흑점 폭발이 발생했습니다! 전자기기들이 먹통이 되어 60초 동안 모든 원거리 타워의 공격이 불가능해집니다."
+        name: 'Solar Flare', weight: 15, type: 'negative', id: 'solar_flare',
+        desc: "An intense solar flare has occurred! Electronic devices are malfunctioning; all ranged towers are disabled for 60 seconds."
       },
       { 
-        name: '식중독', weight: 15, type: 'negative', id: 'food_poisoning',
-        desc: "정착민들이 상한 음식을 먹고 식중독에 걸렸습니다! 고통과 구토로 인해 45초 동안 모든 파견 작업 효율이 50% 감소합니다."
+        name: 'Food Poisoning', weight: 15, type: 'negative', id: 'food_poisoning',
+        desc: "Colonists have contracted food poisoning from spoiled food! Suffering and vomiting reduce all assignment efficiency by 50% for 45 seconds."
       },
       { 
-        name: '정신적 파동', weight: 20, type: 'negative', id: 'psychic_drone',
-        desc: "불쾌한 정신적 파동이 정착지를 휩쓸고 있습니다! 정착민들이 극심한 두통과 집중력 저하를 겪으며 60초 동안 모든 타워의 사거리가 20% 감소합니다."
+        name: 'Psychic Drone', weight: 20, type: 'negative', id: 'psychic_drone',
+        desc: "An unpleasant psychic drone is sweeping through the settlement! Colonists suffer from severe headaches; all tower ranges are reduced by 20% for 60 seconds."
       },
       { 
-        name: '파업', weight: 12, type: 'negative', id: 'labor_strike',
-        desc: "정착민들이 처우 개선과 휴식을 요구하며 파업을 선언했습니다! 60초 동안 상점을 이용하거나 새로운 타워를 배치할 수 없습니다."
+        name: 'Labor Strike', weight: 12, type: 'negative', id: 'labor_strike',
+        desc: "Colonists have declared a strike, demanding better treatment and rest! You cannot use the shop or deploy new towers for 60 seconds."
       },
       { 
-        name: '방화광', weight: 10, type: 'negative', id: 'pyromaniac',
-        desc: "정착지에 방화광 정착민이 화풀이로 불을 질렀습니다! 창고에 보관 중이던 무작위 자원 중 일부가 소실되었습니다."
+        name: 'Pyromaniac', weight: 10, type: 'negative', id: 'pyromaniac',
+        desc: "A pyromaniac colonist has started a fire out of frustration! Some random resources in storage have been lost."
       },
       { 
-        name: '식량 부패', weight: 15, type: 'negative', id: 'food_rot',
-        desc: "보관 중이던 식량이 상해버렸습니다! 덥고 습한 날씨 혹은 관리 소홀로 인해 보관 중인 식량의 상당수가 부패했습니다."
+        name: 'Food Rot', weight: 15, type: 'negative', id: 'food_rot',
+        desc: "Food in storage has spoiled! Due to hot humid weather or poor management, a significant portion of food has rotted."
       },
       {
-        name: '식인 동물 무리', weight: 18, type: 'negative', id: 'manhunter_pack',
-        desc: "정착지 주변에서 미친 듯이 굶주린 동물 무리가 습격해왔습니다! 매우 빠른 속도로 달려오는 동물들을 제거해야 합니다."
+        name: 'Manhunter Pack', weight: 18, type: 'negative', id: 'manhunter_pack',
+        desc: "A pack of crazed, hungry animals has raided the area! You must eliminate the animals rushing at very high speeds."
       },
       {
-        name: '곤충 군락', weight: 15, type: 'negative', id: 'infestation',
-        desc: "깊은 바위산 천장에서 기분 나쁜 긁는 소리가 들리기 시작합니다... 곤충들이 굴을 뚫고 정착지를 습격했습니다!"
+        name: 'Infestation', weight: 15, type: 'negative', id: 'infestation',
+        desc: "An unpleasant scratching sound is heard from deep within the rock ceiling... Insects have tunneled through and raided the settlement!"
       },
       {
-        name: '궤도 폭격기 보급', weight: 5, type: 'positive', id: 'orbital_supply',
-        desc: "행성 궤도에 대기 중이던 우주군으로부터 궤도 폭격 목표 지시기가 도착했습니다! 위기의 순간 전장을 청소할 수 있습니다."
+        name: 'Orbital Supply', weight: 5, type: 'positive', id: 'orbital_supply',
+        desc: "An orbital strike targeter has arrived from space forces! You can clear the battlefield in a moment of crisis."
       },
       // [New] 정신 이상 전용 이벤트들 (isMentalBreak: true 마킹 필요)
       {
-        name: '정신 방황', weight: 0, type: 'negative', id: 'confused_wander', isMentalBreak: true,
-        desc: "무드 저하로 인해 정착민들이 정신적인 방황을 겪고 있습니다! 60초 동안 모든 유닛의 공격력과 공격 속도가 10% 감소합니다."
+        name: 'Confused Wander', weight: 0, type: 'negative', id: 'confused_wander', isMentalBreak: true,
+        desc: "Due to low mood, colonists are experiencing a confused wander! All units' attack power and speed are reduced by 10% for 60 seconds."
       }
     ];
 
@@ -394,10 +394,10 @@ export class EncounterManager {
     // [New] 긍정적/부정적 인카운터 시 무드 영향 (±15)
     if (event.type === 'positive') {
         this.app.state.mood = Math.min(100, (this.app.state.mood || 0) + 15);
-        this.app.ui.addMiniNotification(`기쁜 소식: ${event.name}! (무드 +15%)`, "jackpot");
+        this.app.ui.addMiniNotification(`Good News: ${event.name}! (Mood +15%)`, "jackpot");
     } else if (event.type === 'negative') {
         this.app.state.mood = Math.max(0, (this.app.state.mood || 0) - 15);
-        this.app.ui.addMiniNotification(`나쁜 소식: ${event.name}... (무드 -15%)`, "failure");
+        this.app.ui.addMiniNotification(`Bad News: ${event.name}... (Mood -15%)`, "failure");
     }
 
     switch (event.id) {
@@ -475,11 +475,11 @@ export class EncounterManager {
   // 2. 화물 낙하기 (무작위 자원 보급)
   handleCargoPods(event) {
     const resources = [
-        { key: 'steel', name: '강철', min: 40, max: 80 },
-        { key: 'plasteel', name: '플라스틸', min: 20, max: 50 },
-        { key: 'uranium', name: '우라늄', min: 15, max: 40 },
-        { key: 'component', name: '부품', min: 2, max: 6 },
-        { key: 'silver', name: '은화', min: 100, max: 300 }
+        { key: 'steel', name: 'Steel', min: 40, max: 80 },
+        { key: 'plasteel', name: 'Plasteel', min: 20, max: 50 },
+        { key: 'uranium', name: 'Uranium', min: 15, max: 40 },
+        { key: 'component', name: 'Component', min: 2, max: 6 },
+        { key: 'silver', name: 'Silver', min: 100, max: 300 }
     ];
 
     const res = resources[Math.floor(Math.random() * resources.length)];
@@ -488,7 +488,7 @@ export class EncounterManager {
     this.app.state.addResource(res.key, amount);
     
     // 모달 텍스트 업데이트 (실제 획득한 자원 표시)
-    event.desc = `궤도에서 떨어진 낙하기를 회수했습니다! \n\n보상: ${res.name} +${amount}`;
+    event.desc = `Cargo pods recovered from orbit! \n\nReward: ${res.name} +${amount}`;
     this.modalText.innerText = event.desc;
   }
 
@@ -496,14 +496,14 @@ export class EncounterManager {
   handleWandererJoins() {
     this.app.state.population += 1;
     this.app.state.idlePopulation += 1;
-    this.app.ui.addMiniNotification("새로운 정착민 합류! (인구 +1)");
+    this.app.ui.addMiniNotification("New wanderer joined! (Population +1)");
   }
 
   // 4. 암브로시아 발아 (은환 2배)
   handleAmbrosiaSprout(event) {
     this.activeEvents.push({
         id: 'ambrosia_sprout',
-        name: '암브로시아 발아',
+        name: 'Ambrosia Sprout',
         desc: event.desc,
         type: 'positive',
         duration: 120 // 120초간 지속
@@ -514,7 +514,7 @@ export class EncounterManager {
   handlePsychicSoothe(event) {
     this.activeEvents.push({
         id: 'psychic_soothe',
-        name: '정신적 안정파',
+        name: 'Psychic Soothe',
         desc: event.desc,
         type: 'positive',
         duration: 60 // 60초간 지속
@@ -536,33 +536,33 @@ export class EncounterManager {
 
     if (result.weaponData) {
         this.app.startPlacement(result);
-        event.desc = `유적 깊숙한 곳에서 빛나는 상자를 발견했습니다. \n\n득템: 전설 등급의 [${pName}]`;
+        event.desc = `You found a glowing crate deep within the ruins. \n\nAcquired: Legendary [${result.weaponData.label || pName}]`;
         this.modalText.innerText = event.desc;
-        this.app.ui.showNotification("전설적 유물 발견", `${pName}을(를) 획득했습니다!`, "Legendary");
+        this.app.ui.showNotification("Ancient Relic Found", `${result.weaponData.label || pName} secured!`, "Legendary");
     }
   }
 
   // 7. 작업 영감 (특정 작업 3배 보너스)
   handleWorkInspiration(event) {
     const jobs = [
-        { id: 'logging', name: '벌목' },
-        { id: 'mining', name: '채광' },
-        { id: 'farming', name: '농사' },
-        { id: 'research', name: '연구' },
-        { id: 'trading', name: '교역' }
+        { id: 'logging', name: 'Logging' },
+        { id: 'mining', name: 'Mining' },
+        { id: 'farming', name: 'Farming' },
+        { id: 'research', name: 'Research' },
+        { id: 'trading', name: 'Trading' }
     ];
     const job = jobs[Math.floor(Math.random() * jobs.length)];
 
     this.activeEvents.push({
         id: 'work_inspiration',
         targetJob: job.id,
-        name: `${job.name} 영감`,
+        name: `${job.name} Inspiration`,
         desc: event.desc,
         type: 'positive',
         duration: 90
     });
 
-    event.desc = `정착민들이 [${job.name}] 작업에서 신들린 지혜를 발휘하기 시작했습니다! \n\n90초 동안 [${job.name}] 자원 획득량이 3배가 됩니다.`;
+    event.desc = `Colonists have started showing divine wisdom in [${job.name}] task! \n\n[${job.name}] resource yield is tripled for 90 seconds.`;
     this.modalText.innerText = event.desc;
   }
 
@@ -570,7 +570,7 @@ export class EncounterManager {
   handleLuciferium(event) {
     this.activeEvents.push({
         id: 'luciferium',
-        name: '루시페륨 투여',
+        name: 'Luciferium Administered',
         desc: event.desc,
         type: 'negative',
         duration: 60 // 60초간 지속
@@ -581,7 +581,7 @@ export class EncounterManager {
   handleSolarFlare(event) {
     this.activeEvents.push({
         id: 'solar_flare',
-        name: '흑점 폭발',
+        name: 'Solar Flare',
         desc: event.desc,
         type: 'negative',
         duration: 60
@@ -592,7 +592,7 @@ export class EncounterManager {
   handleFoodPoisoning(event) {
     this.activeEvents.push({
         id: 'food_poisoning',
-        name: '식중독',
+        name: 'Food Poisoning',
         desc: event.desc,
         type: 'negative',
         duration: 45
@@ -603,7 +603,7 @@ export class EncounterManager {
   handlePsychicDrone(event) {
     this.activeEvents.push({
         id: 'psychic_drone',
-        name: '정신적 파동',
+        name: 'Psychic Drone',
         desc: event.desc,
         type: 'negative',
         duration: 60
@@ -614,12 +614,12 @@ export class EncounterManager {
   handlePyromaniac(event) {
     const s = this.app.state;
     const resources = [
-        { key: 'silver', name: '은화' },
-        { key: 'steel', name: '강철' },
-        { key: 'plasteel', name: '플라스틸' },
-        { key: 'uranium', name: '우라늄' },
-        { key: 'component', name: '부품' },
-        { key: 'researchPoints', name: '연구 데이터' }
+        { key: 'silver', name: 'Silver' },
+        { key: 'steel', name: 'Steel' },
+        { key: 'plasteel', name: 'Plasteel' },
+        { key: 'uranium', name: 'Uranium' },
+        { key: 'component', name: 'Component' },
+        { key: 'researchPoints', name: 'Research' }
     ];
 
     const target = resources[Math.floor(Math.random() * resources.length)];
@@ -632,14 +632,14 @@ export class EncounterManager {
         
         s.addResource(target.key, -lossAmount);
 
-        event.desc = `방화광이 창고에 불을 질러 [${target.name}] 자원 ${lossAmount}개를 태워버렸습니다! \n\n보유 중인 자원이 크게 소실되었습니다.`;
+        event.desc = `A pyromaniac has started a fire in the storage and burned ${lossAmount} [${target.name}]! \n\nStored resources have been significantly lost.`;
         if (this.modalText) this.modalText.innerText = event.desc;
-        this.app.ui.addMiniNotification(`자원 소실: ${target.name} -${lossAmount}`, 'failure');
+        this.app.ui.addMiniNotification(`Resource Lost: ${target.name} -${lossAmount}`, 'failure');
         
         // [New] 방화광은 즉시 사건이므로 바로 카타르시스(정신차림) 지급
         setTimeout(() => this.applyCatharsis(), 1000);
     } else {
-        event.desc = `방화광이 불을 지르려 했으나, 다행히도 대상 자원 창고가 비어있거나 양이 너무 적어 피해가 미미했습니다.`;
+        event.desc = `A pyromaniac tried to start a fire, but fortunately the target storage was empty or the amount was too small to cause damage.`;
         if (this.modalText) this.modalText.innerText = event.desc;
     }
   }
@@ -656,11 +656,11 @@ export class EncounterManager {
         
         s.addResource('food', -lossAmount);
 
-        event.desc = `창고의 식량이 부패했습니다! \n\n소실된 식량: -${lossAmount}`;
+        event.desc = `Food in storage has rotted! \n\nFood lost: -${lossAmount}`;
         if (this.modalText) this.modalText.innerText = event.desc;
-        this.app.ui.addMiniNotification(`식량 부패: -${lossAmount}`, 'failure');
+        this.app.ui.addMiniNotification(`Food Rot: -${lossAmount}`, 'failure');
     } else {
-        event.desc = `창고에 부패할 만큼의 식량이 충분하지 않아 피해 없이 지나갔습니다.`;
+        event.desc = `Not enough food in storage to rot significantly, passing without damage.`;
         if (this.modalText) this.modalText.innerText = event.desc;
     }
   }
@@ -669,7 +669,7 @@ export class EncounterManager {
   handleStrike(event) {
     this.activeEvents.push({
         id: 'labor_strike',
-        name: '노동 파업',
+        name: 'Labor Strike',
         desc: event.desc,
         type: 'negative',
         duration: 60,
@@ -681,7 +681,7 @@ export class EncounterManager {
   handleConfusedWander(event) {
     this.activeEvents.push({
         id: 'confused_wander',
-        name: '정신 방황',
+        name: 'Confused Wander',
         desc: event.desc,
         type: 'negative',
         duration: 60,
@@ -708,15 +708,15 @@ export class EncounterManager {
   handleToxicFallout(event) {
     this.activeEvents.push({
       id: 'toxic_fallout',
-      name: '독성 낙진',
+      name: 'Toxic Fallout',
       desc: event.desc,
       type: 'negative',
       duration: 60 // 60초간 지속
     });
 
     this.app.ui.showNotification(
-      "독성 낙진", 
-      "대기가 오염되어 파견 작업 효율이 50% 감소합니다!", 
+      "Toxic Fallout", 
+      "The atmosphere is contaminated; assignment efficiency is reduced by 50%!", 
       "failure"
     );
   }
@@ -759,7 +759,7 @@ export class EncounterManager {
   // 17. 궤도 폭격기 보급 (아이템 수량 증가)
   handleOrbitalSupply() {
     this.app.state.items.orbital_strike = (this.app.state.items.orbital_strike || 0) + 1;
-    this.app.ui.addMiniNotification("궤도 폭격 지시기 획득!", "Legendary");
+    this.app.ui.addMiniNotification("Orbital Strike Targeter secured!", "Legendary");
     this.app.ui.updateDisplays(this.app.state);
   }
 }

@@ -185,11 +185,11 @@ export class UIManager {
     if (this.settingGiveUpBtn) {
         this.settingGiveUpBtn.onclick = () => {
             this.showCustomConfirm(
-                "정착지 포기", 
-                "정말로 정착지를 포기하시겠습니까? (현재까지의 기록으로 결과창이 표시됩니다)", 
+                "Abandon Settlement", 
+                "Are you sure you want to abandon the settlement? (The result screen will be displayed based on current records)", 
                 () => {
                     this.app.toggleSettings(); // 설정 창 닫기
-                    this.app.handleGameOver("정착지 포기 (플레이어 포기)", false);
+                    this.app.handleGameOver("Settlement Abandoned (Player Choice)", false);
                 }
             );
         };
@@ -233,7 +233,7 @@ export class UIManager {
             this.app.state.settings.showNotifications = isChecked;
             if (this.app.saveSettings) this.app.saveSettings(); // 설정 저장
             
-            this.addMiniNotification(`알림 팝업이 ${isChecked ? '활성화' : '비활성화'}되었습니다.`, 'info');
+            this.addMiniNotification(`Notifications have been ${isChecked ? 'enabled' : 'disabled'}.`, 'info');
         };
     }
 
@@ -278,7 +278,7 @@ export class UIManager {
       this.sellUnitsBtn.onclick = () => {
         const success = this.app.sellSelectedUnit();
         if (!success) {
-          this.addMiniNotification("판매할 유닛을 먼저 선택해주세요!", 'failure');
+          this.addMiniNotification("Please select a unit to sell first!", 'failure');
         }
       };
     }
@@ -306,7 +306,7 @@ export class UIManager {
 
           this.addMiniNotification(`기술 업그레이드 완료: ${this.app.state.techLevel}`);
         } else {
-          this.addMiniNotification("자원이 부족합니다!", 'failure');
+          this.addMiniNotification("Insufficient resources!", 'failure');
         }
         this.updateDisplays(this.app.state);
       };
@@ -318,7 +318,7 @@ export class UIManager {
         if (e) e.stopPropagation(); // 캔버스 클릭 간섭 방지
         // 파업 체크
         if (this.app.encounterManager && this.app.encounterManager.isStrikeActive()) {
-          this.addMiniNotification("정착민들이 파업 중입니다! 상점을 이용할 수 없습니다.", "failure");
+          this.addMiniNotification("Colonists are on strike! Shop unavailable.", "failure");
           return;
         }
 
@@ -335,7 +335,7 @@ export class UIManager {
         else if (grade === 'Mythic' && techIdx < 3) techMet = false;
 
         if (!techMet) {
-          this.addMiniNotification("지식이 부족하여 아직 제작할 수 없습니다!", "failure");
+          this.addMiniNotification("Insufficient knowledge for this tech level!", "failure");
           return;
         }
 
@@ -376,7 +376,7 @@ export class UIManager {
              this.addMiniNotification("무기 설계도를 찾을 수 없습니다!", "failure");
            }
         } else {
-           this.addMiniNotification("자원이 부족합니다!", 'failure');
+           this.addMiniNotification("Insufficient resources!", 'failure');
         }
       };
 
@@ -434,7 +434,7 @@ export class UIManager {
         const curLv = s.upgrades[type] || 0;
 
         if (curLv >= 5) {
-            this.addMiniNotification("이미 최대 레벨에 도달했습니다!", "info");
+            this.addMiniNotification("Already at max level!", "info");
             return;
         }
 
@@ -458,10 +458,10 @@ export class UIManager {
             SoundManager.playUpgrade();
 
             const name = btn.querySelector('.up-name').textContent;
-            this.addMiniNotification(`${name} 강화 완료 (Lv.${s.upgrades[type]})`);
+            this.addMiniNotification(`${name} upgrade complete (Lv.${s.upgrades[type]})`);
             this.updateDisplays(s);
         } else {
-            this.addMiniNotification("자원이 부족합니다!", 'failure');
+            this.addMiniNotification("Insufficient resources!", 'failure');
         }
       };
 
@@ -496,19 +496,19 @@ export class UIManager {
                 s.spendResource(res, amt);
             }
             
-            // [Bug Fix] 타워 배치 대신 아이템 인벤토리에 추가
+            // [Bug Fix] Add item to inventory instead of tower placement
             const itemKeyMap = {
-                '파쇄 수류탄': 'frag_grenade',
-                '펄스 수류탄': 'pulse_grenade',
-                '화염병': 'molotov',
-                '연막 발사기': 'smoke_launcher',
-                '독소 수류탄': 'toxin_grenade',
-                '정신충격창': 'psychic_lance',
-                '고주스': 'go_juice'
+                'frag_grenade': 'frag_grenade',
+                'pulse_grenade': 'pulse_grenade',
+                'molotov': 'molotov',
+                'smoke_launcher': 'smoke_launcher',
+                'toxin_grenade': 'toxin_grenade',
+                'psychic_lance': 'psychic_lance',
+                'go_juice': 'go_juice'
             };
-            // [Fix] 인공자아핵은 타워이므로 즉시 배치 모드로 진입
-            if (weaponName === '인공자아핵') {
-                const result = GachaSystem.createSpecificWeapon('인공자아핵', 'normal', 'None');
+            // [Fix] Persona Core is a tower, so enter placement mode immediately
+            if (weaponName === 'Persona Core') {
+                const result = GachaSystem.createSpecificWeapon('Persona Core', 'normal', 'None');
                 SoundManager.playCraft();
                 setTimeout(() => {
                     this.app.startPlacement(result);
@@ -517,14 +517,14 @@ export class UIManager {
                 const itemKey = itemKeyMap[weaponName];
                 if (itemKey) {
                     s.items[itemKey] = (s.items[itemKey] || 0) + 1;
-                    this.addMiniNotification(`${weaponName} 획득! (사용: 우측 아이템 카드 클릭)`);
+                    this.addMiniNotification(`Obtained ${weaponName}! (Usage: Click item card on the right)`);
                     SoundManager.playSFX('assets/audio/특수제작.ogg', 0.8, SoundManager.PRIORITY.MEDIUM);
                 }
             }
             
             this.updateDisplays(s);
         } else {
-            this.addMiniNotification("자원이 부족합니다!", 'failure');
+            this.addMiniNotification("Insufficient resources!", 'failure');
         }
       };
     });
@@ -594,8 +594,8 @@ export class UIManager {
       const probStr = (isGacha && probs[grade]) ? `<div class="prob-tag">${probs[grade]} CHANCE</div>` : '';
 
       t.innerHTML = `${gradeStr}`;
-      // 배치 문구 제거하고 무기 이름만 크게 표시
-      const cleanName = text.split('이(가)')[0] || text;
+      // Remove localization-specific split logic and use the text directly
+      const cleanName = text;
       x.innerHTML = `${cleanName}${probStr}`;
       
       // 기존 등급 클래스 제거 및 신규 추가
@@ -645,7 +645,7 @@ export class UIManager {
     this.selectedUnit = tower; // 현재 선택된 유닛 추적
     try {
       // 품질 이름 매핑
-      const qualNames = { awful: '끔찍', normal: '평범', excellent: '완벽', legendary: '전설' };
+      const qualNames = { awful: 'Awful', normal: 'Normal', excellent: 'Excellent', legendary: 'Legendary' };
       const qualText = qualNames[tower.quality.toLowerCase()] || tower.quality;
       
       const isRanged = tower.weaponType === 'ranged';
@@ -653,15 +653,15 @@ export class UIManager {
       const skipMaterial = tower.material === 'None' || tower.weaponName === '맨손/목재';
       
       if (isRanged || skipMaterial) {
-        this.detailName.textContent = `${qualText} ${tower.weaponName}`;
+        this.detailName.textContent = `${qualText} ${tower.displayName}`;
       } else {
-        this.detailName.textContent = `${qualText} ${tower.material} ${tower.weaponName}`;
+        this.detailName.textContent = `${qualText} ${tower.materialDisplayName} ${tower.displayName}`;
       }
 
       // 레이블 복구
       if (this.lblDps) this.lblDps.textContent = "DPS";
-      if (this.lblAtk) this.lblAtk.textContent = "공격력";
-      if (this.lblSpd) this.lblSpd.textContent = "공속";
+      if (this.lblAtk) this.lblAtk.textContent = "Atk";
+      if (this.lblSpd) this.lblSpd.textContent = "Spd";
       if (this.rowAp) this.rowAp.classList.remove('hidden');
       if (this.rowSpd) this.rowSpd.classList.remove('hidden'); 
       if (this.rowRange) this.rowRange.classList.remove('hidden');
@@ -669,8 +669,8 @@ export class UIManager {
 
       // [New] 인공자아핵 전용 UI 처리
       if (tower.weaponData.effect === 'aura_persona') {
-          if (this.lblDps) this.lblDps.textContent = "공격력 증가";
-          if (this.lblAtk) this.lblAtk.textContent = "공격속도 증가";
+          if (this.lblDps) this.lblDps.textContent = "Atk Bonus";
+          if (this.lblAtk) this.lblAtk.textContent = "Spd Bonus";
           if (this.lblSpd) {
               this.lblSpd.textContent = "-"; 
               this.detailSpd.textContent = "-";
@@ -690,7 +690,7 @@ export class UIManager {
           
           this.detailRange.textContent = tower.range || 0;
           this.detailGrade.textContent = ""; // [Grade Hidden] 등급 표시 제거
-          this.detailType.textContent = "전략 도구";
+          this.detailType.textContent = "Strategic Tool";
 
           // [New] 원시 능력치 표시
           if (this.detailBaseAtk) {
@@ -701,11 +701,11 @@ export class UIManager {
               this.detailBaseSpd.textContent = `${(tower.baseAttackSpeed || 0).toFixed(2)}/s`;
               this.detailBaseSpd.closest('div')?.classList.remove('hidden');
           }
-          if (this.lblAp) this.lblAp.textContent = "방관";
+          if (this.lblAp) this.lblAp.textContent = "AP";
           if (this.lblDps) this.lblDps.textContent = "DPS";
-          if (this.lblAtk) this.lblAtk.textContent = "공격력";
-          if (this.lblRange) this.lblRange.textContent = "사거리";
-          if (this.lblSpd) this.lblSpd.textContent = "공속";
+          if (this.lblAtk) this.lblAtk.textContent = "Atk";
+          if (this.lblRange) this.lblRange.textContent = "Range";
+          if (this.lblSpd) this.lblSpd.textContent = "Spd";
           
           if (this.rowRange) this.rowRange.classList.remove('hidden');
           if (this.rowSpd) this.rowSpd.classList.remove('hidden');
@@ -726,7 +726,7 @@ export class UIManager {
       let typeKey = tower.weaponType || 'blunt';
       if (typeKey === 'melee') typeKey = 'sharp';
       
-      const typeNames = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
+      const typeNames = { blunt: 'Blunt', sharp: 'Sharp', ranged: 'Ranged' };
       this.detailType.textContent = typeNames[typeKey] || typeKey;
       
       // 공격력 및 업그레이드 정보 계산
@@ -769,15 +769,15 @@ export class UIManager {
       
       // 레이블 및 행 복구 (몬스터 창에서 변경했을 수 있으므로)
       if (this.lblDps) this.lblDps.textContent = "DPS";
-      if (this.lblAtk) this.lblAtk.textContent = "공격력";
-      if (this.lblRange) this.lblRange.textContent = "사거리";
-      if (this.lblSpd) this.lblSpd.textContent = "공속";
+      if (this.lblAtk) this.lblAtk.textContent = "Atk";
+      if (this.lblRange) this.lblRange.textContent = "Range";
+      if (this.lblSpd) this.lblSpd.textContent = "Spd";
       
       if (this.rowRange) this.rowRange.classList.remove('hidden');
       if (this.rowSpd) this.rowSpd.classList.remove('hidden');
 
       // 방관 레이블 및 효과 초기화 (보스 타이머 잔재 제거)
-      if (this.lblAp) this.lblAp.textContent = "방관";
+      if (this.lblAp) this.lblAp.textContent = "AP";
       if (this.detailAp) {
           this.detailAp.style.color = "";
           this.detailAp.style.animation = "none";
@@ -825,19 +825,19 @@ export class UIManager {
       // [New] 특수 기믹(Effect) 정보 표시
       const effectId = tower.weaponData.effect;
       const effectNames = {
-        'stun': '기절',
-        'knockback': '넉백',
-        'armor_break': '방어 파쇄',
-        'aoe_dmg': '범위 공격',
-        'melee_aoe': '근접 광역 공격',
-        'aoe_knockback': '광역 넉백',
-        'aura_cd': '주위 공속 증가',
-        'instakill': '즉사 확률',
-        'max_hp_percent': '체력 비례 피해',
-        'stun_long': '장기 기절',
-        'toxic_stun': '신경 마비 (기절+독성)',
-        'capitalist_rocket': '자본주의의 철퇴 (은화 비례 데미지)',
-        'aura_persona': '궁극의 오라 (공/공속 1.5배)'
+        'stun': 'Stun',
+        'knockback': 'Knockback',
+        'armor_break': 'Armor Break',
+        'aoe_dmg': 'AOE Damage',
+        'melee_aoe': 'Melee AOE',
+        'aoe_knockback': 'AOE Knockback',
+        'aura_cd': 'Atk Speed Aura',
+        'instakill': 'Instakill Chance',
+        'max_hp_percent': '% Max HP Damage',
+        'stun_long': 'Long Stun',
+        'toxic_stun': 'Toxic Paralysis (Stun+Toxin)',
+        'capitalist_rocket': 'Hand of Capitalism (Silver-scaled Damage)',
+        'aura_persona': 'Ultimate Aura (1.5x Atk/Spd)'
       };
       
       if (effectId && effectNames[effectId] && this.rowEffect) {
@@ -857,7 +857,7 @@ export class UIManager {
           if (tower.weaponData.grade === 'Rare') cost = 500;
           else if (tower.weaponData.grade === 'Uncommon') cost = 300;
           
-          if (this.combineUnitText) this.combineUnitText.textContent = `조합 실행 (${cost}) [E]`;
+          if (this.combineUnitText) this.combineUnitText.textContent = `Combine (${cost}) [E]`;
 
           // 연구 포인트 부족 시 비활성화
           const canAfford = (this.app.state.researchPoints >= cost);
@@ -895,17 +895,17 @@ export class UIManager {
     this.selectedEnemy = enemy;
 
     try {
-      this.detailName.textContent = enemy.name || "침입자";
+      this.detailName.textContent = enemy.name || "Intruder";
       this.detailGrade.textContent = enemy.isBoss ? "[BOSS]" : "[ENEMY]";
       this.detailGrade.style.color = enemy.isBoss ? "var(--accent-red)" : "";
       
-      const typeNames = { organic: '생체', mech: '기계' };
+      const typeNames = { organic: 'Organic', mech: 'Mechanical' };
       this.detailType.textContent = typeNames[enemy.type] || enemy.type;
       
       // 레이블 정정 및 불필요한 행 숨김
-      if (this.lblDps) this.lblDps.textContent = "체력";
-      if (this.lblAtk) this.lblAtk.textContent = "방어력";
-      if (this.lblSpd) this.lblSpd.textContent = "이속"; // 공속 대신 이속으로 표시
+      if (this.lblDps) this.lblDps.textContent = "HP";
+      if (this.lblAtk) this.lblAtk.textContent = "Armor";
+      if (this.lblSpd) this.lblSpd.textContent = "Move Speed"; // 공속 대신 이속으로 표시
       
       // 불필요한 행 숨기기 (사거리, 방관)
       if (this.rowRange) this.rowRange.classList.add('hidden');
@@ -930,8 +930,8 @@ export class UIManager {
       // [New] 보스 전용 타이머 표시 (AP 행 재활용)
       if (enemy.isBoss && enemy.bossTimerMax > 0 && this.rowAp && this.lblAp && this.detailAp) {
           this.rowAp.classList.remove('hidden');
-          this.lblAp.textContent = "처치 제한";
-          this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "초";
+          this.lblAp.textContent = "Time Limit";
+          this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "s";
           this.detailAp.style.color = "var(--accent-red)";
           this.detailAp.style.fontWeight = "bold";
       }
@@ -949,12 +949,12 @@ export class UIManager {
       if (this.rowEffect && this.detailEffect) {
           if (enemy.gradeFilter) {
               this.rowEffect.classList.remove('hidden');
-              this.detailEffect.textContent = `공허 보호막 (${enemy.gradeFilter.grade} 이하만 피격)`;
+              this.detailEffect.textContent = `Void Shield (Only ${enemy.gradeFilter.grade} or lower affected)`;
               this.detailEffect.style.color = "#bf61ff"; // 공허 보라색
           } else if (enemy.hpRegen > 0) {
               const regenPct = (enemy.hpRegen / enemy.maxHp * 100).toFixed(1);
               this.rowEffect.classList.remove('hidden');
-              this.detailEffect.textContent = `초재생 (초당 ${regenPct}%)`;
+              this.detailEffect.textContent = `Hyper Regen (${regenPct}% / s)`;
               this.detailEffect.style.color = "var(--accent-green)"; 
           } else {
               this.rowEffect.classList.add('hidden');
@@ -991,7 +991,7 @@ export class UIManager {
 
     // 2. 보스 타이머 실시간 갱신
     if (enemy.isBoss && this.detailAp) {
-        this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "초";
+        this.detailAp.textContent = Math.ceil(enemy.bossTimer) + "s";
         // 10초 미만일 시 빨간색 깜빡임 효과
         if (enemy.bossTimer < 10) {
             this.detailAp.style.animation = "pulse 0.5s infinite";
@@ -1013,7 +1013,7 @@ export class UIManager {
     // 일시정지 상태 반영
     if (this.pauseBtn) {
         this.pauseBtn.classList.toggle('paused', state.isPaused);
-        this.pauseBtn.textContent = state.isPaused ? "재개" : "일시정지";
+        this.pauseBtn.textContent = state.isPaused ? "Resume" : "Pause";
     }
 
     // [New] 배속 버튼 활성화 상태 동기화
@@ -1051,12 +1051,12 @@ export class UIManager {
                   const preview = this.app.waveManager.getNextWavePreview();
                   if (preview) {
                       const gradeSpan = preview.isBossWave ? '<span style="color:var(--accent-red); font-weight:bold;">[BOSS]</span> ' : '';
-                      nextInfo.innerHTML = `${gradeSpan}다음: ${preview.name} x ${preview.count}`;
+                      nextInfo.innerHTML = `${gradeSpan}Next: ${preview.name} x ${preview.count}`;
                   }
               }
               
               if (countdownLabel) {
-                  countdownLabel.textContent = (state.waveNumber === 0) ? "첫 습격 시작까지" : "다음 습격까지";
+                  countdownLabel.textContent = (state.waveNumber === 0) ? "Until First Raid" : "Until Next Raid";
               }
 
               // 3초 이하일 때 위기 연출 (빨간색 + 진동)
@@ -1140,11 +1140,11 @@ export class UIManager {
     }
     if (this.techLevelVal) {
       const names = { 
-        primitive: '원시 (Primitive)', 
-        industrial: '산업 (Industrial)', 
-        advanced: '첨단 (Advanced)', 
-        spacer: '우주 (Spacer)', 
-        ultra: '초월 (Ultra)' 
+        primitive: 'Primitive', 
+        industrial: 'Industrial', 
+        advanced: 'Advanced', 
+        spacer: 'Spacer', 
+        ultra: 'Ultra' 
       };
       this.techLevelVal.textContent = names[state.techLevel] || state.techLevel;
       
@@ -1349,11 +1349,11 @@ export class UIManager {
             const price = this.app.calculateSellPrice(selectedUnit);
             this.sellUnitsBtn.style.opacity = "1";
             this.sellUnitsBtn.style.filter = "none";
-            if (sellText) sellText.textContent = `판매 (${price}) [S]`;
+            if (sellText) sellText.textContent = `Sell (${price}) [S]`;
         } else {
             this.sellUnitsBtn.style.opacity = "0.4";
             this.sellUnitsBtn.style.filter = "grayscale(1)";
-            if (sellText) sellText.textContent = `판매 [S] (유닛 선택 필요)`;
+            if (sellText) sellText.textContent = `Sell [S] (Select unit)`;
         }
     }
 
@@ -1365,7 +1365,7 @@ export class UIManager {
         
         if (isMax) {
             this.techUpBtn.disabled = true;
-            this.techUpBtn.textContent = "최고 기술 도달";
+            this.techUpBtn.textContent = "MAX TECH";
             this.techUpBtn.style.opacity = "0.4";
         } else {
             // 비용 결정 (산업: 200/100, 첨단: 500/300, 우주: 1200/800, 초월: 2500/2000)
@@ -1558,39 +1558,9 @@ export class UIManager {
     let requirements = [];
     
     // 요구 수량 데이터 (UIManager.js의 craft logic과 동기화)
-    if (grade === 'Rare') {
-      requirements = [
-        { name: '나무', req: 30, cur: s.wood },
-        { name: '강철', req: 30, cur: s.steel },
-        { name: '연구', req: 50, cur: s.researchPoints },
-        { name: '부품', req: 1, cur: s.component }
-      ];
-    } else if (grade === 'Epic') {
-      requirements = [
-        { name: '강철', req: 50, cur: s.steel },
-        { name: '플라스틸', req: 10, cur: s.plasteel },
-        { name: '연구', req: 100, cur: s.researchPoints },
-        { name: '부품', req: 5, cur: s.component }
-      ];
-    } else if (grade === 'Legendary') {
-      requirements = [
-        { name: '플라스틸', req: 30, cur: s.plasteel },
-        { name: '우라늄', req: 20, cur: s.uranium },
-        { name: '연구', req: 300, cur: s.researchPoints },
-        { name: '부품', req: 10, cur: s.component }
-      ];
-    } else if (grade === 'Mythic') {
-      requirements = [
-        { name: '플라스틸', req: 50, cur: s.plasteel },
-        { name: '우라늄', req: 30, cur: s.uranium },
-        { name: '연구', req: 500, cur: s.researchPoints },
-        { name: '부품', req: 20, cur: s.component }
-      ];
-    }
-    
     // [New] 기술 수준 요구사항 추가
     const levels = ['primitive', 'industrial', 'advanced', 'spacer', 'ultra'];
-    const koLevels = { primitive: '원시', industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
+    const engLevels = { primitive: 'Primitive', industrial: 'Industrial', advanced: 'Advanced', spacer: 'Spacer', ultra: 'Ultra' };
     const currTechIdx = levels.indexOf(s.techLevel);
     
     const reqTechMap = { Rare: 1, Epic: 2, Legendary: 3, Mythic: 4 };
@@ -1599,9 +1569,9 @@ export class UIManager {
     if (reqTechIdx > 0) {
         const isTechShort = currTechIdx < reqTechIdx;
         requirements.unshift({
-            name: '기술 수준',
-            req: koLevels[levels[reqTechIdx]],
-            cur: koLevels[s.techLevel],
+            name: 'Tech Level',
+            req: engLevels[levels[reqTechIdx]],
+            cur: engLevels[s.techLevel],
             isShort: isTechShort
         });
     }
@@ -1610,7 +1580,7 @@ export class UIManager {
     const gradeMap = { Legendary: 'Mythic', Mythic: 'Legendary' };
     const displayGrade = gradeMap[grade] || grade;
     
-    this.renderTooltip(e, requirements, `${displayGrade} 등급 제작 요구사항`);
+    this.renderTooltip(e, requirements, `${displayGrade} Crafting Requirements`);
   }
 
   /**
@@ -1624,7 +1594,7 @@ export class UIManager {
         return;
     }
     
-    const typeLabel = event.type === 'positive' ? '긍정적 이벤트' : '부정적 이벤트';
+    const typeLabel = event.type === 'positive' ? 'Positive Event' : 'Negative Event';
     const typeColor = event.type === 'positive' ? '#a855f7' : '#ef4444'; // 보라색(긍정), 빨간색(부정)
 
     // 특정 이벤트는 테마 색상 적용
@@ -1641,7 +1611,7 @@ export class UIManager {
           ${event.desc}
       </div>
       <div class="tooltip-footer" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <span style="color: #888; font-size: 11px;">남은 지속 시간</span> 
+          <span style="color: #888; font-size: 11px;">Remaining Duration</span> 
           <span style="color: ${themeColor}; font-weight: 800; font-family: 'Courier New', monospace; font-size: 14px;">${Math.max(0, Math.ceil(event.duration))}s</span>
       </div>
     `;
@@ -1657,21 +1627,21 @@ export class UIManager {
     const cost = SPECIAL_CRAFT_DB[weaponName];
     const requirements = [];
     const nameMap = { 
-        silver: '은화', steel: '강철', wood: '나무', 
-        component: '부품', plasteel: '플라스틸', 
-        jade: '비취', uranium: '우라늄',
-        food: '식량', herbalMedicine: '약초',
-        researchPoints: '연구 포인트'
+        silver: 'Silver', steel: 'Steel', wood: 'Wood', 
+        component: 'Component', plasteel: 'Plasteel', 
+        jade: 'Jade', uranium: 'Uranium',
+        food: 'Food', herbalMedicine: 'Herbal Med.',
+        researchPoints: 'Research'
     };
     
-    const koLevels = { primitive: '원시', industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
+    const engLevels = { primitive: 'Primitive', industrial: 'Industrial', advanced: 'Advanced', spacer: 'Spacer', ultra: 'Ultra' };
     
-    if (weaponName === '인공자아핵') {
+    if (weaponName === 'Persona Core') {
         const curTech = s.techLevel || 'primitive';
         requirements.push({ 
-            name: '기술 수준', 
-            req: koLevels['ultra'], 
-            cur: koLevels[curTech],
+            name: 'Tech Level', 
+            req: engLevels['ultra'], 
+            cur: engLevels[curTech],
             isShort: curTech !== 'ultra'
         });
     }
@@ -1684,10 +1654,10 @@ export class UIManager {
 
     let effect = "";
     if (weaponName === '인공자아핵') {
-        effect = `주변 아군 타워의 공격력과 공격 속도를 <span style='color:#00f2ff'>1.5배</span> 강화합니다.`;
+        effect = `Enhances Atk and Spd of nearby ally towers by <span style='color:#00f2ff'>1.5x</span>.`;
     }
 
-    this.renderTooltip(e, requirements, `${weaponName} 제작 요구사항`, effect);
+    this.renderTooltip(e, requirements, `${weaponName} Crafting Requirements`, effect);
   }
 
   showTechTooltip(e) {
@@ -1697,7 +1667,7 @@ export class UIManager {
     const currIdx = levels.indexOf(s.techLevel);
     
     if (currIdx >= levels.length - 1) {
-        this.renderTooltip(e, [], "기술 수준 최대 (Ultra)");
+        this.renderTooltip(e, [], "Max Tech Reached (Ultra)");
         return;
     }
 
@@ -1708,13 +1678,13 @@ export class UIManager {
     else if (currIdx === 3) { sCost = 2500; rCost = 2000; }
 
     const requirements = [
-        { name: '은화', req: sCost, cur: s.silver },
-        { name: '연구', req: rCost, cur: s.researchPoints }
+        { name: 'Silver', req: sCost, cur: s.silver },
+        { name: 'Research', req: rCost, cur: s.researchPoints }
     ];
 
     const nextLevel = levels[currIdx + 1];
-    const koLevels = { industrial: '산업', advanced: '첨단', spacer: '우주', ultra: '초월' };
-    this.renderTooltip(e, requirements, `기술 업그레이드 (${koLevels[nextLevel]}) 요구사항`);
+    const engLevels = { industrial: 'Industrial', advanced: 'Advanced', spacer: 'Spacer', ultra: 'Ultra' };
+    this.renderTooltip(e, requirements, `Tech Upgrade (${engLevels[nextLevel]}) Requirements`);
   }
 
   showUpgradeTooltip(e, btn) {
@@ -1741,9 +1711,9 @@ export class UIManager {
         const nextLvCost = getCost(type, nextLv);
 
         const resourceMap = {
-            blunt: [{ name: '강철', key: 'steel' }, { name: '은화', key: 'silver' }],
-            sharp: [{ name: '목재', key: 'wood' }, { name: '은화', key: 'silver' }],
-            ranged: [{ name: '플라스틸', key: 'plasteel' }, { name: '은화', key: 'silver' }]
+            blunt: [{ name: 'Steel', key: 'steel' }, { name: 'Silver', key: 'silver' }],
+            sharp: [{ name: 'Wood', key: 'wood' }, { name: 'Silver', key: 'silver' }],
+            ranged: [{ name: 'Plasteel', key: 'plasteel' }, { name: 'Silver', key: 'silver' }]
         };
         const resList = resourceMap[type];
         requirements = resList.map(r => ({
@@ -1751,8 +1721,8 @@ export class UIManager {
             req: nextLvCost,
             cur: s[r.key]
         }));
-        const names = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
-        title = `${names[type] || type} 전투 훈련 (Lv.${curLv} -> ${nextLv})`;
+        const names = { blunt: 'Blunt', sharp: 'Sharp', ranged: 'Ranged' };
+        title = `${names[type] || type} Combat Training (Lv.${curLv} -> ${nextLv})`;
 
         const getRate = (lv) => (lv >= 101 ? 30 : (lv >= 51 ? 20 : 10));
         const curRate = getRate(curLv);
@@ -1761,32 +1731,32 @@ export class UIManager {
         const curBonus = curLv * curRate;
         const nextBonus = nextLv * nextRate;
 
-        effect = `데미지 배율: <span style="color:#00f2ff">+${curBonus}% -> +${nextBonus}%</span>`;
+        effect = `Damage Multiplier: <span style="color:#00f2ff">+${curBonus}% -> +${nextBonus}%</span>`;
         if (nextLv === 51 || nextLv === 101) {
-            effect += ` <br><span style="color:var(--accent-gold)">* 효율 업급구간! (개별 효율 ${nextRate}%로 상승)</span>`;
+            effect += ` <br><span style="color:var(--accent-gold)">* Efficiency spike! (Efficiency increased to ${nextRate}%)</span>`;
         }
     }
     // 2. 생산 업그레이드 (커브 적용)
     else {
         if (curLv >= 5) {
-            this.renderTooltip(e, [], "최대 레벨 도달", "추가 강화가 불가능합니다.");
+            this.renderTooltip(e, [], "Max Level Reached", "No further upgrades possible.");
             return;
         }
         const silverCurve = [200, 500, 1200, 2800, 5500];
         const resCurve = [100, 250, 600, 1400, 2750];
         
         const costs = {
-            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '현대 교육' },
-            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '숙련 장인' },
-            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: '고급 농경' },
-            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: '대규모 채굴' },
-            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: '기계식 벌목' },
-            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: '무역 네트워크' }
+            education: { silver: silverCurve[curLv], wood: resCurve[curLv], name: 'Modern Education' },
+            artisan: { silver: silverCurve[curLv], steel: resCurve[curLv], name: 'Master Artisan' },
+            farming: { silver: silverCurve[curLv], food: resCurve[curLv], name: 'Advanced Farming' },
+            mining: { silver: silverCurve[curLv], steel: resCurve[curLv], name: 'Mass Mining' },
+            logging: { silver: silverCurve[curLv], wood: resCurve[curLv], name: 'Mechanical Logging' },
+            trade: { silver: Math.floor(silverCurve[curLv] * 1.5), researchPoints: Math.floor(resCurve[curLv] * 1.5), name: 'Trade Network' }
         };
         
         const costData = costs[type];
         if (costData) {
-            const nameMap = { silver: '은화', steel: '강철', wood: '나무', food: '식량', researchPoints: '연구 포인트' };
+            const nameMap = { silver: 'Silver', steel: 'Steel', wood: 'Wood', food: 'Food', researchPoints: 'Research' };
             Object.entries(costData).forEach(([k, v]) => {
                 if (k === 'name') return;
                 requirements.push({
@@ -1795,25 +1765,25 @@ export class UIManager {
                     cur: s[k] || 0
                 });
             });
-            title = `${costData.name || type} 강화 (Lv.${curLv} -> ${curLv + 1})`;
+            title = `${costData.name || type} Upgrade (Lv.${curLv} -> ${curLv + 1})`;
             
             const curBonus = curLv * 25;
             const nextBonus = (curLv + 1) * 25;
             
             if (type === 'education') {
-                effect = `연구량: +${curBonus}% -> +${nextBonus}%<br>부품 확률: +${curLv*5}% -> +${(curLv+1)*5}%`;
+                effect = `Research: +${curBonus}% -> +${nextBonus}%<br>Component Chance: +${curLv*5}% -> +${(curLv+1)*5}%`;
             } else if (type === 'artisan') {
-                effect = `품질 보수치: +${curLv*10}% -> +${(curLv+1)*10}%`;
+                effect = `Quality Bonus: +${curLv*10}% -> +${(curLv+1)*10}%`;
             } else if (type === 'mining') {
-                effect = `강철 생산: +${curBonus}% -> +${nextBonus}%<br>희귀 확률: +${curLv*4}% -> +${(curLv+1)*4}%`;
+                effect = `Steel: +${curBonus}% -> +${nextBonus}%<br>Rare Ore Chance: +${curLv*4}% -> +${(curLv+1)*4}%`;
             } else if (type === 'trade') {
-                effect = `기본 수익: +${curLv*100}% -> +${(curLv+1)*100}%<br>비취/플라스틸: +${curLv*8}% -> +${(curLv+1)*8}%`;
+                effect = `Base Income: +${curLv*100}% -> +${(curLv+1)*100}%<br>Jade/Plasteel: +${curLv*8}% -> +${(curLv+1)*8}%`;
             } else if (type === 'farming' || type === 'logging') {
                 const curHerb = 5 + (curLv * 2);
                 const nextHerb = 5 + ((curLv + 1) * 2);
-                effect = `생산량: +${curBonus}% -> +${nextBonus}%<br>무드 보너스: +${curLv*2}% -> +${(curLv+1)*2}%<br>약초 확률: ${curHerb}% -> ${nextHerb}%`;
+                effect = `Production: +${curBonus}% -> +${nextBonus}%<br>Mood Bonus: +${curLv*2}% -> +${(curLv+1)*2}%<br>Herbal Chance: ${curHerb}% -> ${nextHerb}%`;
             } else {
-                effect = `생산량: +${curBonus}% -> +${nextBonus}%`;
+                effect = `Production: +${curBonus}% -> +${nextBonus}%`;
             }
         }
     }
@@ -1825,7 +1795,7 @@ export class UIManager {
     
     if (effect) {
         html += `<div class="tooltip-effect" style="margin-bottom: 10px; padding: 10px; background: rgba(0,242,255,0.1); border-left: 3px solid #00f2ff; font-size: 0.85rem; color: #fff;">
-            <div style="color: #00f2ff; font-weight: bold; margin-bottom: 4px; font-size: 0.75rem;">강화 효과</div>
+            <div style="color: #00f2ff; font-weight: bold; margin-bottom: 4px; font-size: 0.75rem;">Enhancement Effect</div>
             ${effect}
         </div>`;
     }
@@ -1840,7 +1810,7 @@ export class UIManager {
         <span class="res-val">${r.cur} / ${r.req}</span>
       </div>`;
     });
-    html += `</div><div class="tooltip-footer">부족한 자원이 있으면 빨간색으로 표시됩니다.</div>`;
+    html += `</div><div class="tooltip-footer">Insufficient resources are shown in red.</div>`;
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
       this.tooltip.classList.remove('hidden');
@@ -1868,9 +1838,9 @@ export class UIManager {
     
     // 스탯 요약 (필요시)
     html += `<div class="tooltip-footer" style="padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.8rem;">`;
-    if (item.dmg > 0) html += `<div>폭발 피해: <span style="color: #ff4d4d">${item.dmg}</span></div>`;
-    if (item.radius > 0) html += `<div>효과 범위: ${item.radius}px</div>`;
-    html += `<div style="color: var(--accent-gold); font-weight: bold; margin-top: 5px;">재사용 대기: ${item.cooldown}초</div>`;
+    if (item.dmg > 0) html += `<div>Explosion Damage: <span style="color: #ff4d4d">${item.dmg}</span></div>`;
+    if (item.radius > 0) html += `<div>Effect Radius: ${item.radius}px</div>`;
+    html += `<div style="color: var(--accent-gold); font-weight: bold; margin-top: 5px;">Cooldown: ${item.cooldown}s</div>`;
     html += `</div>`;
     
     if (this.tooltip) {
@@ -1891,11 +1861,11 @@ export class UIManager {
     const farmingProb = 5 + (up.farming * 2);
 
     const workData = {
-        logging: { name: '벌목 작업', desc: `목재를 획득합니다. 목재는 주로 날붙이(Sharp) 계열 무기 강화와 화염병(Molotov) 제작에 사용됩니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: <span style="color:#fff">${loggingProb}%</span> 확률로 약초 획득 (레벨당 +2%)` },
-        mining: { name: '채광 작업', desc: '강철을 주력으로 생산하며, 숙련도가 오르면 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>, <span style="color:var(--accent-gold)">부품(Component)</span>, <span style="color:#00f2ff">우라늄(Uranium)</span>, 그리고 희귀 보석인 <span style="color:#2ecc71">비취(Jade)</span>를 추가로 채굴할 수 있습니다.' },
-        farming: { name: '농사 작업', desc: `정착지의 주 식량원을 확보합니다. 식량이 일정량에 도달할 때마다 정착민 인구가 자동으로 증가하여 운영 효율이 높아집니다.<br><br><span style="color:#00f2ff">★ 무드 보너스</span>: 낮은 확률로 무드 상승<br><span style="color:#4ade80">★ 야생 약초</span>: <span style="color:#fff">${farmingProb}%</span> 확률로 약초 획득 (레벨당 +2%)` },
-        research: { name: '연구 활동', desc: '연구 포인트를 축적하며, 연구 도중 낮은 확률로 <span style="color:var(--accent-gold)">부품(Component)</span>을 발견할 수도 있습니다. 기술 수준(Tech Level)을 높여 상위 등급의 아이템 제작 권한을 해금합니다.' },
-        trading: { name: '교역 활동', desc: '외부 상단과의 거래를 통해 은화(Silver)를 벌어들입니다. 무역 네트워크 강화 시 매우 희귀한 <span style="color:var(--accent-blue)">플라스틸(Plasteel)</span>이나 <span style="color:#2ecc71">비취(Jade)</span>를 대량으로 수입할 수 있습니다.' }
+        logging: { name: 'Logging Task', desc: `Gather wood. Wood is primarily used for Sharp weapon upgrades and Molotov crafting.<br><br><span style="color:#00f2ff">★ Mood Bonus</span>: Low chance to increase mood.<br><span style="color:#4ade80">★ Wild Herbs</span>: <span style="color:#fff">${loggingProb}%</span> chance to find herbs ( +2% per level).` },
+        mining: { name: 'Mining Task', desc: 'Primarily produces Steel. At higher skill levels, you can additionally mine <span style="color:var(--accent-blue)">Plasteel</span>, <span style="color:var(--accent-gold)">Components</span>, <span style="color:#00f2ff">Uranium</span>, and rare <span style="color:#2ecc71">Jade</span>.' },
+        farming: { name: 'Farming Task', desc: `Secure the colony's primary food source. Every time food reaches a certain amount, the population increases automatically.<br><br><span style="color:#00f2ff">★ Mood Bonus</span>: Low chance to increase mood.<br><span style="color:#4ade80">★ Wild Herbs</span>: <span style="color:#fff">${farmingProb}%</span> chance to find herbs ( +2% per level).` },
+        research: { name: 'Research Activity', desc: 'Accumulates Research Points. During research, there is a low chance to discover <span style="color:var(--accent-gold)">Components</span>. Higher tech levels unlock advanced weapon crafting.' },
+        trading: { name: 'Trading Activity', desc: 'Earn Silver through trade with outer caravans. Strengthening the trade network allows mass imports of rare <span style="color:var(--accent-blue)">Plasteel</span> or <span style="color:#2ecc71">Jade</span>.' }
     };
 
     const data = workData[type];
@@ -1903,7 +1873,7 @@ export class UIManager {
 
     let html = `<div class="tooltip-title" style="color: #4ade80">${data.name}</div>`;
     html += `<div class="tooltip-body" style="font-size: 0.85rem; line-height: 1.6; color: #e2e8f0; margin: 10px 0;">${data.desc}</div>`;
-    html += `<div class="tooltip-footer" style="color: var(--accent-gold); font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* 배정된 인원수가 많을수록 획득 속도가 빨라집니다.</div>`;
+    html += `<div class="tooltip-footer" style="color: var(--accent-gold); font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* More workers assigned equals faster progress.</div>`;
 
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
@@ -1924,42 +1894,42 @@ export class UIManager {
     const maxProb = Math.max(loggingProb, farmingProb);
 
     const resData = {
-        wave: { name: '현재 웨이브 (Wave)', desc: '현재 진행 중인 습격 단계입니다. 총 <span style="color:var(--accent-gold)">100 웨이브</span>까지 버텨내면 정착지 방어에 최종 성공하게 됩니다.' },
-        enemyCount: { name: '적 개체수 (Enemy Count)', desc: '전장에 남아있는 적의 총 숫자입니다. 이 수치가 <span style="color:#ff4d4d">100</span>을 초과하면 기기 과부하 및 방어선 붕괴로 <span style="color:#ff4d4d">게임 오버</span>됩니다.' },
-        population: { name: '인구 (Population)', desc: '정착지에 거주하는 현재 총 인원입니다. 인구가 많아질수록 <span style="color:#4ade80">대기 중인 정착민(Idle)</span>이 늘어나며, 이들을 각 작업에 파견하여 자원 생산 및 연구 효율을 극대화할 수 있습니다.' },
+        wave: { name: 'Current Wave', desc: 'Current raid stage. Survive until <span style="color:var(--accent-gold)">Wave 100</span> to successfully defend the settlement.' },
+        enemyCount: { name: 'Enemy Count', desc: 'Total number of enemies remaining on the battlefield. If this exceeds <span style="color:#ff4d4d">100</span>, the defense collapses resulting in <span style="color:#ff4d4d">Game Over</span>.' },
+        population: { name: 'Population', desc: "Total residents in the settlement. Higher population increases <span style='color:#4ade80'>Idle Colonists</span>, who can be assigned to tasks to maximize production." },
         mood: { 
-            name: '정착민 무드 (행복도)', 
-            desc: `정착민들의 현재 심리 상태입니다. 무드에 따라 다양한 보너스나 페널티가 발생합니다.<br><br>
-                   • <span style="color:#3b82f6">매우 높음 (85%+)</span>: 작업 속도 및 유닛 공격력 +10% (곱연산 적용)<br>
-                   • <span style="color:#22c55e">좋음 (60%~85%)</span>: 정상적인 상태<br>
-                   • <span style="color:#ef4444">정신 이상 임계치 (25% 미만)</span>: 정신 이상이 발생할 확률이 매우 높습니다.<br><br>
+            name: 'Colonist Mood', 
+            desc: `Current psychological state of the colonists. Triggers various bonuses or penalties.<br><br>
+                   • <span style="color:#3b82f6">Extreme High (85%+)</span>: Work speed and Unit Atk +10%.<br>
+                   • <span style="color:#22c55e">Good (60%~85%)</span>: Normal state.<br>
+                   • <span style="color:#ef4444">Extreme Break (Below 25%)</span>: High chance of mental breaks.<br><br>
                    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.1); margin:8px 0;">
-                   • <span style="color:#fbbf24">무드 회복 수단</span>:<br>
-                   - 적 처치 시 <span style="color:#fff">+0.75%</span> (알림 미표시)<br>
-                   - 웨이브 클리어 시 <span style="color:#fff">+7.0%</span><br>
-                   - 벌목/농사 작업 중 낮은 확률로 힐링 발생<br>
-                   - 긍정적인 랜덤 인카운터 조우 시 상승` 
+                   • <span style="color:#fbbf24">Recovery</span>:<br>
+                   - Kill enemy: <span style="color:#fff">+0.75%</span><br>
+                   - Wave clear: <span style="color:#fff">+7.0%</span><br>
+                   - Healing during Logging/Farming<br>
+                   - Positive random encounters` 
         },
         herbalMedicine: {
-            name: '야생 약초 (Herbal Medicine)',
-            desc: `자연에서 채집한 귀중한 약용 식물입니다.<br><br>
-                   • <span style="color:#fbbf24">획득 경로</span>: 벌목(Logging)이나 농사(Farming) 작업 완료 시 <span style="color:#fff">${maxProb}%</span> 확률로 발견합니다. (강화 시 증가)<br>
-                   • <span style="color:#4ade80">사용 (클릭)</span>: 약초 <span style="color:#fff">30개</span>를 사용하여 무드를 <span style="color:#fff">25</span> 회복합니다. (클릭하여 사용)`
+            name: 'Herbal Medicine',
+            desc: `Valuable medicinal plants gathered from nature.<br><br>
+                   • <span style="color:#fbbf24">Source</span>: Found with <span style="color:#fff">${maxProb}%</span> chance during Logging or Farming.<br>
+                   • <span style="color:#4ade80">Usage</span>: Use <span style="color:#fff">30</span> herbs to restore <span style="color:#fff">25</span> mood.`
         },
         financialTherapy: {
-            name: '금융치료 (Silver Therapy)',
-            desc: `막대한 자본을 투입하여 정착민들의 무드를 즉각적으로 케어합니다.<br><br>
-                   • <span style="color:#fbbf24">사용 (클릭)</span>: 은화 <span style="color:#fff">300개</span>를 사용하여 무드를 <span style="color:#fff">20</span> 회복합니다. (클릭하여 사용)`
+            name: 'Silver Therapy',
+            desc: `Instantly care for colonist mood by investing significant capital.<br><br>
+                   • <span style="color:#fbbf24">Usage</span>: Use <span style="color:#fff">300</span> Silver to restore <span style="color:#fff">20</span> mood.`
         },
-        food: { name: '식량 (Food)', desc: `생존을 위한 필수 자원입니다. 식량 게이지가 <span style="color:var(--accent-gold)">100%</span> (현재 목표: ${s.foodToNextPop})에 도달할 때마다 자동으로 소모되며 정착지의 <span style="color:#4ade80">인구(Population)가 1명 증가</span>합니다.` },
-        silver: { name: '은화 (Silver)', desc: '기본적인 화폐입니다. 유닛 구매, 업그레이드, 거래 등에 광범위하게 사용됩니다.' },
-        steel: { name: '강철 (Steel)', desc: '건설과 제작에 쓰이는 기본 자원입니다. 둔기 무기 강화와 각종 기계 부품 제작에 필요합니다.' },
-        wood: { name: '목재 (Wood)', desc: '날붙이(Sharp) 계열 무기 강화와 화염병 제작 등에 사용되는 초기 자원입니다.' },
-        plasteel: { name: '플라스틸 (Plasteel)', desc: '첨단 기술이 적용된 합금입니다. 우주세기 무기 제작과 원거리 무기 강화에 필수적입니다.' },
-        uranium: { name: '우라늄 (Uranium)', desc: '희귀하고 밀도 높은 금속입니다. 파괴적인 파괴력을 가진 중화기 제작에 사용됩니다.' },
-        jade: { name: '비취 (Jade)', desc: '매우 희귀하고 아름다운 보석입니다. 자급 가치가 매우 높아 이를 주재료로 사용한 무기나 아이템은 실질적인 전투 성능은 다소 떨어지나, <span style="color:#ffcc00">매우 고가</span>에 거래되어 정착지 자금 확보에 최적입니다.' },
-        component: { name: '부품 (Component)', desc: '복잡한 기계 장치입니다. 모든 고급 무기 제작에 빠짐없이 들어가는 귀중한 자재입니다.' },
-        researchPoints: { name: '연구 포인트', desc: '새로운 기술을 해금하고 정착지의 전반적인 생산성을 높이는 데 사용됩니다.' }
+        food: { name: 'Food', desc: `Essential survival resource. Consumed automatically at <span style="color:var(--accent-gold)">100%</span> (Target: ${s.foodToNextPop}) to increase <span style="color:#4ade80">Population by 1</span>.` },
+        silver: { name: 'Silver', desc: 'Primary currency. Used for buying units, upgrades, and trading.' },
+        steel: { name: 'Steel', desc: 'Basic resource for construction and crafting. Required for Blunt weapon upgrades and components.' },
+        wood: { name: 'Wood', desc: 'Starting resource used for Sharp weapon upgrades and Molotovs.' },
+        plasteel: { name: 'Plasteel', desc: 'Advanced tech alloy. Essential for Space-age weapons and Ranged weapon upgrades.' },
+        uranium: { name: 'Uranium', desc: 'Rare and dense metal. Used for heavy weapons with devastating power.' },
+        jade: { name: 'Jade', desc: 'Extremely rare gemstone. High market value; weapons made of jade have lower combat performance but sell for a <span style="color:#ffcc00">very high price</span>.' },
+        component: { name: 'Component', desc: 'Mechanical assemblies. Required for all advanced weapon crafting.' },
+        researchPoints: { name: 'Research Points', desc: 'Used to unlock new technologies and increase overall productivity.' }
     };
 
     const data = resData[type];
@@ -1983,16 +1953,16 @@ export class UIManager {
     this.currentTooltipSource = { method: 'showGambleTooltip', args: [type] };
     const gambleData = {
         wood: { 
-            name: '목재 기초 정제', cost: '목재 200', color: '#8b4513',
-            desc: '나무를 정제하여 유용한 광물을 추출하거나 암시장에 비밀리에 처분합니다. <br>• 주요 보상: <span style="color:#ccc">강철</span>, <span style="color:var(--accent-blue)">플라스틸</span>, <span style="color:var(--accent-gold)">부품</span> 등' 
+            name: 'Wood Refining', cost: 'Wood 200', color: '#8b4513',
+            desc: 'Refine wood to extract useful minerals or dispose of it on the black market.<br>• Main Rewards: <span style="color:#ccc">Steel</span>, <span style="color:var(--accent-blue)">Plasteel</span>, <span style="color:var(--accent-gold)">Components</span>, etc.' 
         },
         steel: { 
-            name: '강철 중급 분해', cost: '강철 200', color: '#a9a9a9',
-            desc: '복잡한 기계 잔해와 강철 더미를 정밀 분해합니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">부품</span>, <span style="color:var(--accent-blue)">플라스틸</span>, <span style="color:#2ecc71">비취</span> 등' 
+            name: 'Steel Scrap Salvage', cost: 'Steel 200', color: '#a9a9a9',
+            desc: 'Precisely disassemble mechanical debris and steel piles.<br>• Main Rewards: <span style="color:var(--accent-gold)">Components</span>, <span style="color:var(--accent-blue)">Plasteel</span>, <span style="color:#2ecc71">Jade</span>, etc.' 
         },
         silver: { 
-            name: '은화 암시장 거래', cost: '은화 300', color: 'var(--accent-gold)',
-            desc: '거래를 통해 희귀한 자원을 확보합니다. 하지만 거래에 실패할 확률이 높습니다. <br>• 주요 보상: <span style="color:var(--accent-gold)">잭팟(은화 2000)</span>, <span style="color:var(--accent-gold)">부품</span>, 플라스틸, 우라늄 소량' 
+            name: 'Black Market Trade', cost: 'Silver 300', color: 'var(--accent-gold)',
+            desc: 'Secure rare resources through trade. High chance of failure.<br>• Main Rewards: <span style="color:var(--accent-gold)">Jackpot (Silver 2000)</span>, <span style="color:var(--accent-gold)">Components</span>, Plasteel, Small amount of Uranium.' 
         }
     };
 
@@ -2004,7 +1974,7 @@ export class UIManager {
         비용: <span style="color:#ff4d4d">${data.cost}</span><br><br>
         ${data.desc}
     </div>`;
-    html += `<div class="tooltip-footer" style="color: #ff4d4d; font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* 주의: 정제 실패 시 자원만 소모됩니다.</div>`;
+    html += `<div class="tooltip-footer" style="color: #ff4d4d; font-size: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 8px;">* Note: Resources are consumed even if refining fails.</div>`;
 
     if (this.tooltip) {
       this.tooltip.innerHTML = html;
@@ -2026,7 +1996,7 @@ export class UIManager {
       Epic: '#9b59b6', Legendary: '#ff00ff', Mythic: '#f1c40f'
     };
 
-    let title = type === 'random' ? "무작위 유닛 구매 확률" : "고급 무기 상자 확률 (Rare 이상)";
+    let title = type === 'random' ? "Recruit Chance" : "Adv. Weapon Box Chance (Rare+)";
     let html = `<div class="tooltip-title">${title}</div><div class="tooltip-body">`;
 
     if (type === 'random') {
@@ -2055,7 +2025,7 @@ export class UIManager {
           <span class="res-val">${prob.toFixed(1)}%</span>
         </div>`;
       });
-      html += `<div style="margin-top: 8px; font-size: 0.75rem; color: #888; border-top: 1px solid #444; padding-top: 4px;">* 하위 등급(일반/우수) 제외 및 품질 보너스 대폭 적용</div>`;
+      html += `<div style="margin-top: 8px; font-size: 0.75rem; color: #888; border-top: 1px solid #444; padding-top: 4px;">* Excludes Common/Uncommon. Quality bonus heavily applied.</div>`;
     }
 
     html += `</div>`;
@@ -2187,8 +2157,8 @@ export class UIManager {
       
       SoundManager.playUpgrade();
 
-      const typeKo = { blunt: '둔기', sharp: '날붙이', ranged: '원거리' };
-      this.addMiniNotification(`${typeKo[type] || type} 훈련 완료 (Lv.${s.upgrades[type]})`);
+      const typeEng = { blunt: 'Blunt', sharp: 'Sharp', ranged: 'Ranged' };
+      this.addMiniNotification(`${typeEng[type] || type} training complete (Lv.${s.upgrades[type]})`);
       
       // 모든 유닛 스탯 재설정 (전투력 즉시 반영)
       this.app.units.forEach(u => { if (u.setupStats) u.setupStats(); });
@@ -2294,7 +2264,7 @@ export class UIManager {
     const resContainer = document.getElementById('res-resource-list');
     if (resContainer) {
         resContainer.innerHTML = '';
-        const koRes = { silver: '은화', wood: '목재', steel: '강철', plasteel: '플라스틸', component: '부품', uranium: '우라늄', jade: '비취', researchPoints: '연구 포인트', food: '식량' };
+        const engRes = { silver: 'Silver', wood: 'Wood', steel: 'Steel', plasteel: 'Plasteel', component: 'Component', uranium: 'Uranium', jade: 'Jade', researchPoints: 'Research', food: 'Food' };
         
         // 은화는 별도 통계가 있으므로 병합하여 표시
         const combinedResources = { ...stats.totalResourcesSpent };
@@ -2304,11 +2274,11 @@ export class UIManager {
             if (amt > 0) {
                 const tag = document.createElement('div');
                 tag.className = 'res-tag';
-                tag.textContent = `${koRes[key] || key}: ${amt.toLocaleString()}`;
+                tag.textContent = `${engRes[key] || key}: ${amt.toLocaleString()}`;
                 resContainer.appendChild(tag);
             }
         });
-        if (resContainer.innerHTML === '') resContainer.innerHTML = '<span style="color:#444">소모 자원 없음</span>';
+        if (resContainer.innerHTML === '') resContainer.innerHTML = '<span style="color:#444">No resources consumed</span>';
     }
 
     // 4. 설치한 타워 목록 생성
@@ -2325,7 +2295,7 @@ export class UIManager {
     });
 
     if (sortedTowers.length === 0) {
-        listContainer.innerHTML = '<span style="color:#555">설치한 타워 없음</span>';
+        listContainer.innerHTML = '<span style="color:#555">No towers built</span>';
     }
 
     // 4. 모달 표시

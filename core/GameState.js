@@ -98,9 +98,9 @@ export class GameState {
             wood: 0, steel: 0, plasteel: 0, uranium: 0, component: 0, jade: 0, food: 0
         },
         towersBuilt: 0, // 총 건설 횟수
-        towerCounts: {}, // 종류별 건설 수 { '단궁': 5, '강철검': 3 ... }
-        maxDamage: 0, // 단일 타격 최고 데미지
-        maxDamageUnit: '없음', // 최고 데미지를 입힌 유닛명
+        towerCounts: {}, // Construction count by type
+        maxDamage: 0, // Highest single hit damage
+        maxDamageUnit: 'None', // Unit name that dealt the highest damage
         totalDamageDealt: 0,   // [New] 누적 총 피해량
         maxPopulationReached: 3, // [New] 역대 최고 인구
         totalResearchCompleted: 0, // [New] 연구 완료 횟수

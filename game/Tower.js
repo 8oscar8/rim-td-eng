@@ -14,12 +14,15 @@ export class Tower {
     this.gameCore = gameCore; 
     
     // 1. 기본 무기 데이터 및 품질/재질 추출
-    this.weaponData = gachaResult.weaponData || WEAPON_DB['맨손/목재'];
-    this.weaponName = gachaResult.weaponName || this.weaponData.name || '알 수 없는 무기';
+    this.weaponData = gachaResult.weaponData || WEAPON_DB['Fists/Wood'];
+    this.weaponName = gachaResult.weaponName || this.weaponData.name || 'Fists/Wood'; 
+    this.displayName = this.weaponData.label || this.weaponName; // UI 표시용 영문 이름
     
     // 품질 및 재질 (대소문자 및 매핑 안정성 확보)
     this.quality = (gachaResult.quality || 'normal').toLowerCase();
-    this.material = gachaResult.material || '강철';
+    this.material = gachaResult.material || 'Steel';
+    const matInfo = MATERIAL_DB[this.material] || MATERIAL_DB['Steel'];
+    this.materialDisplayName = matInfo.displayName || this.material; // 재질 영문명
     this.weaponType = (this.weaponData.type || 'blunt').toLowerCase();
 
     // 2. 기본 수치 및 보정치 확보
@@ -27,7 +30,7 @@ export class Tower {
     const baseSpd = Number(this.weaponData.spd) || 0.5;
     const baseAp = Number(this.weaponData.ap) || 0;
     
-    const matData = MATERIAL_DB[this.material] || MATERIAL_DB['강철'] || { matMul: 1, spdMul: 1, apMul: 1 };
+    const matData = MATERIAL_DB[this.material] || MATERIAL_DB['Steel'] || { matMul: 1, spdMul: 1, apMul: 1 };
     const qualMod = QUALITY_COEFFS[this.quality] || 1.0;
     
     const isRanged = this.weaponType === 'ranged';
@@ -36,8 +39,8 @@ export class Tower {
     const apMul = isRanged ? 1.0 : (matData.apMul || 1.0);
 
     // 3. 최종 스탯 계산 및 검증 (0 방지)
-    // [UI 개선] '999강 나무몽둥이' 및 '꽁치검'은 재질/품질 보너스를 무시하고 기본 성능을 가지도록 예외 처리
-    let finalDmgMul = (this.weaponName.includes('999강') || this.weaponName.includes('꽁치검')) ? 1.0 : (dmgMul * qualMod);
+    // [UI 개선] '999 Wood Club' 및 'Ancient Fish Sword'는 재질/품질 보너스를 무시하고 기본 성능을 가지도록 예외 처리
+    let finalDmgMul = (this.weaponName.includes('999 Wood') || this.weaponName.includes('Fish Sword')) ? 1.0 : (dmgMul * qualMod);
     let calcDmg = baseDmg * finalDmgMul;
     
     if (baseDmg > 0 && calcDmg < 1) calcDmg = 1;
@@ -47,7 +50,7 @@ export class Tower {
     this.ap = Math.min(1.0, baseAp * apMul);
     this.baseRange = this.weaponData.range || (isRanged ? 250 : (this.weaponType === 'sharp' ? 100 : 80));
 
-    console.log(`[Tower] ${this.weaponName} 생성: ATK ${this.baseDamage}, SPD ${this.baseAttackSpeed.toFixed(2)}, Type ${this.weaponType}`);
+    console.log(`[Tower] ${this.displayName} (${this.weaponName}) 생성: ATK ${this.baseDamage}, SPD ${this.baseAttackSpeed.toFixed(2)}, Type ${this.weaponType}`);
 
     this.cooldown = 0;
     this.selected = false;
@@ -302,7 +305,7 @@ export class Tower {
              this.damage, this.ap, effect, 
              this.weaponData.grade, this.weaponData.shred || 0,
              !!this.weaponData.isTrueDamage,
-             this.weaponName
+             this.displayName
            );
         });
         return; 
@@ -319,7 +322,7 @@ export class Tower {
               this.weaponData.shred || 0,
               !!this.weaponData.isTrueDamage
             );
-            p.shooterName = this.weaponName;
+            p.shooterName = this.displayName;
             addProjectile(p);
           }, i * 50);
         }
@@ -333,7 +336,7 @@ export class Tower {
       }
 
       // 미니건 전용 과열 로직
-      if (this.weaponName === '미니건') {
+      if (this.weaponName === 'Minigun') {
         this.heat += burstCount * 1.2;
         if (this.heat >= this.maxHeat) {
           this.isOverheated = true;
@@ -356,7 +359,7 @@ export class Tower {
               this.damage, this.ap, this.weaponData.effect, 
               this.weaponData.grade, this.weaponData.shred || 0,
               !!this.weaponData.isTrueDamage,
-              this.weaponName
+              this.displayName
             );
             
             const effect = this.weaponData.effect;
@@ -465,7 +468,7 @@ export class Tower {
       ctx.restore();
     }
 
-    if (this.weaponName === '전설의 꽁치검') {
+    if (this.weaponName === 'Ancient Fish Sword') {
       const glowSize = 45 + Math.sin(time) * 8;
       const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, glowSize);
       grad.addColorStop(0, 'rgba(0, 191, 255, 0.7)');
@@ -490,7 +493,7 @@ export class Tower {
       ctx.setLineDash([10, 10]);
       ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
-    } else if (this.weaponName === '999강 나무몽둥이') {
+    } else if (this.weaponName === '999 Wood Club') {
       const glowSize = 50 + Math.sin(time) * 10;
       const gradient = ctx.createRadialGradient(this.x, this.y, 5, this.x, this.y, glowSize);
       gradient.addColorStop(0, 'rgba(255, 215, 0, 0.9)');
@@ -499,7 +502,7 @@ export class Tower {
       ctx.beginPath(); ctx.arc(this.x, this.y, glowSize, 0, Math.PI * 2); ctx.fill();
     }
 
-    if (this.material === '비취옥' || this.material === 'Jade') {
+    if (this.material === 'Jade') {
       const jadeTime = Date.now() * 0.002;
       const jadePulse = Math.sin(jadeTime) * 5;
       

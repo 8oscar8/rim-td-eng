@@ -8,86 +8,86 @@ export class TutorialManager {
         this.currentStep = 0;
         this.tutorialData = [
             {
-                msg: "📡 [긴급 무전]\n반갑습니다, 관리자님. 당신은 변방계의 척박한 행성에 불시착했습니다. \n\n우주선이 재가동되기까지 총 100번의 웨이브를 버텨내야 합니다. 곧 대규모 습격이 시작됩니다. 살아남기 위해 기지를 방어하십시오!",
+                msg: "📡 [Emergency Transmission]\nWelcome, Overseer. You have crash-landed on a desolate planet in the Rim. \n\nYou must survive 100 waves until the ship can be rebooted. A large raid is coming soon. Defend the settlement to survive!",
                 mission: null,
                 canNext: true
             },
             {
-                msg: "우선 방어선을 구축하기 위해 요원이 필요합니다.\n\n하단 상점의 [일반 유닛 모집] 버튼(Q)을 눌러 유닛을 확보하고, \n확보된 유닛을 지도(원형 경로 주변)에 클릭하여 배치하세요.",
-                mission: "유닛 모집 및 배치하기 (Q -> 클릭)",
+                msg: "First, you need personnel to establish a defense line.\n\nClick the [Recruit Unit] button (Q) in the shop below to secure a unit, \nand click on the map (near the circular path) to deploy them.",
+                mission: "Recruit and Deploy a unit (Q -> Click)",
                 canNext: false,
-                trigger: 'place_unit', // 최종 목표는 배치 완료
+                trigger: 'place_unit',
                 pointer: '#btn-buy-random'
             },
             {
-                msg: "성공적이군요. 이제 정착민들을 실제 작업에 투입해야 합니다.\n\n오른쪽 사이드바를 마우스 휠로 끝까지 내려서 [정착민 파견 관리] 구역을 찾아보세요.",
-                mission: "휠을 내려 파견 관리 확인하기",
+                msg: "Successful. Now you must put your colonists to work.\n\nScroll down the right sidebar to find the [Colonist Assignment] section.",
+                mission: "Scroll down to find Assignment section",
                 canNext: false,
                 trigger: 'view_dispatch',
                 pointer: '.work-management'
             },
             {
-                msg: "좋습니다. 이곳에 정착민을 배정하면 식량, 연구 포인트, 목재, 강철 같은 생존 자원을 지속적으로 생산할 수 있습니다.\n\n각 항목의 [+] 버튼이나 단축키를 사용해 대기 중인 모든 정착민을 0명이 될 때까지 배정해 보세요.",
-                mission: "모든 정착민을 작업에 배정하기 (0명 만들기)",
+                msg: "Great. Assigning colonists here allows you to continuously produce survival resources such as Food, Research, Wood, and Steel.\n\nTry assigning all idle colonists until the count reaches 0 using the [+] buttons or shortcuts.",
+                mission: "Assign all colonists to tasks (Reach 0 idle)",
                 canNext: false,
                 trigger: 'assign_all_workers',
                 pointer: '.btn-circle.plus'
             },
             {
-                msg: "완벽합니다! 이곳에서 노는 인구를 자원 채집에 배정할 수 있습니다.\n\n정착민들이 자원을 모으는 동안, 전투력을 높여봅시다. [훈련] 탭을 클릭해 보세요.",
-                mission: "[훈련] 탭 클릭하기",
+                msg: "Perfect! This is where you put your idle population to work.\n\nWhile they gather resources, let's increase our combat power. Click the [Train] tab.",
+                mission: "Click the [Train] tab",
                 canNext: false,
                 trigger: 'switch_tab_train',
                 pointer: '.tab-btn[data-tab="train"]'
             },
             {
-                msg: "각 무기 타입별(둔기/날붙이/원거리) 공격력을 강화할 수 있습니다.\n\n원하는 항목의 [강화] 버튼을 눌러 전투력을 업그레이드해 보세요.",
-                mission: "유닛 강화 1회 실행하기",
+                msg: "You can increase attack power for each weapon type (Blunt/Sharp/Ranged).\n\nTry upgrading your combat power by clicking the [Upgrade] button for any category.",
+                mission: "Execute 1 unit upgrade",
                 canNext: false,
                 trigger: 'upgrade_unit',
                 pointer: '#up-ranged' 
             },
             {
-                msg: "훈련을 통해 기초 화력을 갖추셨군요. 아주 좋습니다!\n\n무기 강화 아래쪽을 보시면 [생산 및 파견 강화] 항목들이 있습니다. \n\n이곳에서 파견 효율을 높여 자원 수급량을 늘릴 수 있다는 점도 잊지 마세요!",
-                mission: "생산 및 파견 강화 확인하기",
+                msg: "You've established basic firepower through training. Excellent!\n\nBelow the weapon upgrades, you'll find [Production & Assignment Upgrades]. \n\nDon't forget that you can increase resource yield by enhancing efficiency here!",
+                mission: "Check Production & Assignment Upgrades",
                 canNext: true,
-                pointer: '.prod-up' // 생산 강화 버튼들 중 하나 가리키기
+                pointer: '.prod-up'
             },
             {
-                msg: "자원도 넉넉히 모으셨다면 이제 상단 [제작] 탭으로 이동해 보세요.",
-                mission: "[제작] 탭 클릭하기",
+                msg: "Once you've gathered enough resources, move to the [Craft] tab at the top.",
+                mission: "Click the [Craft] tab",
                 canNext: false,
                 trigger: 'switch_tab_craft',
                 pointer: '.tab-btn[data-tab="craft"]'
             },
             {
-                msg: "이곳에서는 자원을 소모하여 특정 등급의 타워를 확정적으로 획득할 수 있습니다.\n\n운에 맡기지 않고 확실한 전력 보강이 필요할 때 이용해 보세요. \n\n다음으로 [특수] 탭으로 이동해 봅시다.",
-                mission: "[특수] 탭 클릭하기",
+                msg: "Here, you can spend resources to guaranteed-obtain a tower of a specific grade.\n\nUse this when you need reliable power reinforcement instead of relying on luck. \n\nNext, let's move to the [Special] tab.",
+                mission: "Click the [Special] tab",
                 canNext: false,
                 trigger: 'switch_tab_special',
                 pointer: '.tab-btn[data-tab="special"]'
             },
             {
-                msg: "무사히 [특수] 탭에 도착하셨군요! 이곳은 전투의 향방을 결정지을 강력한 [특수 소모품]들을 제작하고 사용할 수 있는 공간입니다.",
-                mission: "특수 소모품 구역 살펴보기",
+                msg: "You've reached the [Special] tab safely! This is the space where you can craft and use powerful [Consumables] that can decide the outcome of battle.",
+                mission: "Check the Special Consumables section",
                 canNext: true,
                 pointer: '.tab-pane.active'
             },
             {
-                msg: "이제 왼쪽 사이드바를 마우스 휠로 아래로 내려보세요.\n\n이곳에 나열된 아이템들을 제작하여 비상시에 사용할 수 있습니다.",
-                mission: "휠을 내려 [특수 아이템] 확인하기",
+                msg: "Now, scroll down the left sidebar.\n\nYou can craft the items listed here to use in case of emergency.",
+                mission: "Scroll down to find [Special Items]",
                 canNext: false,
                 trigger: 'view_special_items',
                 pointer: '.item-section'
             },
             {
-                msg: "수고하셨습니다! 소모품은 위급한 순간에 전세를 역전시킬 강력한 수단입니다.\n\n정말 마지막으로, 왼쪽 상단의 [정착지 무드]를 확인해 보세요.",
-                mission: "정착민 무드 상태 확인하기",
+                msg: "Well done! Consumables are powerful tools to turn the tide in critical moments.\n\nFinally, check the [Settlement Mood] at the top left.",
+                mission: "Check Colonist Mood status",
                 canNext: true,
                 pointer: '.mood-card'
             },
             {
-                msg: "무드(기분)가 25% 이하로 떨어지면 정착민들이 파업을 하거나 정신 이상을 일으킬 수 있습니다.\n\n항상 무드가 관리되도록 신경 써주세요. \n\n[무전 종료] 기초 교육을 모두 마칩니다. 행운을 빌니다!",
+                msg: "If Mood drops below 25%, colonists may go on strike or have mental breaks.\n\nAlways make sure to manage their mood. \n\n[End Transmission] Basic training complete. Good luck!",
                 mission: null,
                 canNext: true
             }
@@ -166,7 +166,7 @@ export class TutorialManager {
 
         // '건너뛰기/완료' 버튼: 마지막 단계에서만 '완료'로 변경
         if (this.skipBtn) {
-            this.skipBtn.textContent = isLastStep ? "튜토리얼 완료" : "튜토리얼 건너뛰기";
+            this.skipBtn.textContent = isLastStep ? "Finish Tutorial" : "Skip Tutorial";
         }
     }
 
@@ -269,7 +269,7 @@ export class TutorialManager {
         this.updatePointer(null); // 화살표 제거
         // 튜토리얼이 끝나면 게임 일시정지 해제
         this.app.state.isPaused = false;
-        this.app.ui.addMiniNotification("튜토리얼 완료! 행운을 빕니다.", "info");
+        this.app.ui.addMiniNotification("Tutorial complete! Good luck.", "info");
     }
 
     /**

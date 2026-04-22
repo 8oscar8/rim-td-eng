@@ -23,7 +23,7 @@ export class GachaSystem {
     // 해당 등급 무기가 없으면 폴백 (기본 무기도 투척류가 아니어야 함)
     let weapon = availableWeapons.length > 0 
       ? availableWeapons[Math.floor(Math.random() * availableWeapons.length)] 
-      : { name: '맨손/목재', ...WEAPON_DB['맨손/목재'] };
+      : { name: 'Fists/Wood', ...WEAPON_DB['Fists/Wood'] };
 
     // 3. 품질 결정 (장인 레벨 반영)
     let probs = { ...QUALITY_PROBABILITIES };
@@ -46,8 +46,8 @@ export class GachaSystem {
       }
     }
 
-    // 4. 재질 결정 (가중치 적용: 나무 > 강철 > 플라스틸 > 우라늄 > 비취옥)
-    let selectedMaterial = '강철'; 
+    // 4. 재질 결정 (가중치 적용: Wood > Steel > Plasteel > Uranium > Jade)
+    let selectedMaterial = 'Steel'; 
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
     } else if (weapon.type === 'ranged') {
@@ -114,13 +114,13 @@ export class GachaSystem {
     }
 
     // 4. 재질 결정
-    let selectedMaterial = '강철';
+    let selectedMaterial = 'Steel';
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
     } else if (weapon.type === 'ranged') {
       selectedMaterial = 'None';
     } else {
-      const mWeight = { '나무': 20, '강철': 50, '플라스틸': 20, '우라늄': 7, '비취옥': 3 };
+      const mWeight = { 'Wood': 20, 'Steel': 50, 'Plasteel': 20, 'Uranium': 7, 'Jade': 3 };
       const totalM = Object.values(mWeight).reduce((a, b) => a + b, 0);
       const mRand = Math.random() * totalM;
       let mCum = 0;
@@ -140,8 +140,6 @@ export class GachaSystem {
       material: selectedMaterial 
     };
   }
-
-
 
   static drawAdvanced(artisanLevel = 0) {
     // 1. 고급 상자 전용 상향된 확률 (기본 확률의 상대적 계산이 아닌 고정값으로 상향)
@@ -173,7 +171,7 @@ export class GachaSystem {
     
     let weapon = availableWeapons.length > 0 
       ? availableWeapons[Math.floor(Math.random() * availableWeapons.length)] 
-      : { name: '전투망치', ...WEAPON_DB['전투망치'] }; // 폴백 (Rare 기초 무기)
+      : { name: 'Warhammer', ...WEAPON_DB['Warhammer'] }; // 폴백 (Rare 기초 무기)
 
     // 3. 품질 결정 (고급 뽑기는 더 높은 기본 보너스 부여)
     let probs = { ...QUALITY_PROBABILITIES };
@@ -196,15 +194,15 @@ export class GachaSystem {
       }
     }
 
-    // 4. 재질 결정 (고급 뽑기는 '나무' 확률을 대폭 낮춤)
-    let selectedMaterial = '강철'; 
+    // 4. 재질 결정 (고급 뽑기는 'Wood' 확률을 대폭 낮춤)
+    let selectedMaterial = 'Steel'; 
     if (weapon.fixedMaterial) {
       selectedMaterial = weapon.fixedMaterial;
     } else if (weapon.type === 'ranged') {
       selectedMaterial = 'None';
     } else {
       let mProbs = { ...MATERIAL_PROBABILITIES };
-      mProbs['나무'] = 5; // 나무 확률 최소화
+      mProbs['Wood'] = 5; // Wood 확률 최소화
       const totalM = Object.values(mProbs).reduce((a, b) => a + b, 0);
       
       const matRand = Math.random() * totalM;
@@ -226,14 +224,14 @@ export class GachaSystem {
     };
   }
 
-  // [추가] 현재 등급 확률 정보를 문자열로 반환
+  // [Update] Get current grade probability info as string
   static getGradeProbabilitiesString() {
-    const korGrades = {
-      Common: '일', Uncommon: '우', Rare: '희', Epic: '에',
-      Legendary: '신', Mythic: '전'
+    const engGrades = {
+      Common: 'C', Uncommon: 'U', Rare: 'R', Epic: 'E',
+      Legendary: 'L', Mythic: 'M'
     };
     return Object.entries(GRADE_PROBABILITIES)
-      .map(([grade, prob]) => `${korGrades[grade] || grade}(${prob}%)`)
+      .map(([grade, prob]) => `${engGrades[grade] || grade}(${prob}%)`)
       .join(', ');
   }
 
@@ -285,15 +283,15 @@ export class GachaSystem {
   }
 
   // [복구] 특정 무기를 강제로 생성하여 반환 (시나리오 지급 전용)
-  static createSpecificWeapon(name, quality = 'normal', material = '강철') {
+  static createSpecificWeapon(name, quality = 'normal', material = 'Steel') {
     const weapon = WEAPON_DB[name];
     if (!weapon) {
       console.warn(`Weapon ${name} not found in DB!`);
       return { 
-        weaponName: '맨손/목재', 
-        weaponData: WEAPON_DB['맨손/목재'], 
+        weaponName: 'Fists/Wood', 
+        weaponData: WEAPON_DB['Fists/Wood'], 
         quality: 'normal', 
-        material: '나무' 
+        material: 'Wood' 
       };
     }
     return {

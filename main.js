@@ -128,7 +128,7 @@ class App {
 
   handleWorkComplete(type) {
     if (type === 'population_up') {
-        this.ui.addMiniNotification("새로운 정착민 합류! (인구 +1)");
+        this.ui.addMiniNotification("New wanderer joined! (Population +1)");
         return;
     }
 
@@ -150,36 +150,36 @@ class App {
     switch(type) {
       case 'logging': 
         baseAmount = Math.floor(12 * getBonus(up.logging)); 
-        resName = "목재"; 
+        resName = "Wood"; 
         break;
       case 'mining': 
         baseAmount = Math.floor(8 * getBonus(up.mining)); 
-        resName = "강철"; 
+        resName = "Steel"; 
         // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸(5+2%*lv), 우라늄(10+2%*lv), 비취(5+2%*lv)
         // 채광 보너스 (심층 채굴 레벨 반영): 플라스틸 상향 (12+4%*lv)
         const mineBonus = up.mining * 0.04;
         if (!isFailure) {
             if (Math.random() < 0.12 + mineBonus) { 
                 const amt = Math.floor(Math.random() * 3) + 2; // 2 ~ 4개 
-                s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
+                s.plasteel += amt; bonusLoot += ` (Plasteel +${amt}!)`; 
             }
             if (Math.random() < 0.10 + mineBonus) { 
                 const amt = Math.floor(Math.random() * 3) + 1; 
-                s.uranium += amt; bonusLoot += ` (우라늄 +${amt}!)`; 
+                s.uranium += amt; bonusLoot += ` (Uranium +${amt}!)`; 
             }
             if (Math.random() < 0.02 + (up.mining * 0.02)) { 
-                s.jade += 1; bonusLoot += ` (비취 +1!)`; 
+                s.jade += 1; bonusLoot += ` (Jade +1!)`; 
             }
         }
         break;
       case 'farming': 
         baseAmount = Math.floor(12 * getBonus(up.farming)); 
-        resName = "식량"; 
+        resName = "Food"; 
         break;
       case 'trading': 
         // 기본량 하향 (12 -> 6), 하지만 레벨당 기본 효율 증가 추가
         baseAmount = Math.floor((6 + (up.trade * 6)) * getBonus(up.trade)); 
-        resName = "은화"; 
+        resName = "Silver"; 
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률(10+5%*lv) 및 획득량 증가
         // 교역 보너스 (무역 네트워크 레벨 반영): 플라스틸 확률 상향 (20+8%*lv)
         const tradeBonus = up.trade * 0.08;
@@ -187,23 +187,23 @@ class App {
         if (!isFailure) {
             if (Math.random() < 0.20 + tradeBonus) { 
                 const amt = Math.floor((Math.random() * 4 + 2) * getBonus(up.trade)); // 획득량 상향
-                s.plasteel += amt; bonusLoot += ` (플라스틸 +${amt}!)`; 
+                s.plasteel += amt; bonusLoot += ` (Plasteel +${amt}!)`; 
             }
             if (Math.random() < 0.015 + jadeBonus) { 
                 const amt = Math.floor(Math.random() * 2) + 1; 
-                s.jade += amt; bonusLoot += ` (비취 +${amt}!)`; 
+                s.jade += amt; bonusLoot += ` (Jade +${amt}!)`; 
             }
         }
         break;
       case 'research': 
         baseAmount = Math.floor(13 * getBonus(up.education)); 
-        resName = "연구"; 
+        resName = "Research"; 
         // 연구 보너스 (현대 교육 레벨 반영): 부품 획득 확률(20+5%*lv)
         const eduBonus = up.education * 0.05;
         if (!isFailure && Math.random() < 0.20 + eduBonus) {
             const amt = Math.floor(Math.random() * 2) + 1; 
             bonusComponent = amt;
-            bonusLoot += ` (부품 +${amt}!)`;
+            bonusLoot += ` (Component +${amt}!)`;
         }
         break;
     }
@@ -226,21 +226,21 @@ class App {
     finalAmount = Math.floor(finalAmount * workMult);
 
     // [New] 암브로시아 보너스 (은화 2배) 반영
-    if (resName === "은화") {
+    if (resName === "Silver") {
         const silverMult = this.encounterManager.getGlobalSilverMultiplier();
         finalAmount = Math.floor(finalAmount * silverMult);
     }
 
     // 테마별 메시지 맵핑
     const themeMessages = {
-        logging: { jackpot: "🌳 거대 수목 발견!", success: "🪓 벌목 완료", failure: "⚙️ 장비 파손" },
-        mining: { jackpot: "⛏️ 치밀한 심층 채광!", success: "🪵 강철 채굴", failure: "⚠️ 낙석 사고" },
-        farming: { jackpot: "🌾 풍년 (Bumper Crop)!", success: "🧺 식량 수확", failure: "❄️ 한파 피해" },
-        research: { jackpot: "📜 고대 기술문서 발견!", success: "🔧 연구 완료", failure: "🔥 회로 소실" },
-        trading: { jackpot: "💰 친절한 상단 방문!", success: "📦 교역 완료", failure: "🏴‍☠️ 해적의 약탈" }
+        logging: { jackpot: "🌳 Massive Tree Found!", success: "🪓 Logging Complete", failure: "⚙️ Gear Breakdown" },
+        mining: { jackpot: "⛏️ Deep Mining Success!", success: "🪵 Steel Mined", failure: "⚠️ Cave-in" },
+        farming: { jackpot: "🌾 Bumper Crop!", success: "🧺 Food Harvested", failure: "❄️ Cold Snap Damage" },
+        research: { jackpot: "📜 Ancient Text Discovered!", success: "🔧 Research Complete", failure: "🔥 Circuit Loss" },
+        trading: { jackpot: "💰 Friendly Trade Ship!", success: "📦 Trade Complete", failure: "🏴‍☠️ Pirate Raid" }
     };
 
-    const theme = themeMessages[type] || { jackpot: "⭐ 대박!", success: "✅ 완료", failure: "❌ 실패" };
+    const theme = themeMessages[type] || { jackpot: "⭐ Jackpot!", success: "✅ Complete", failure: "❌ Failure" };
     let statusMsg = isJackpot ? theme.jackpot : (isFailure ? theme.failure : theme.success);
 
     // 자원 추가
@@ -256,7 +256,7 @@ class App {
       }
     } else if (isFailure) {
       // 실패 미니 알림 (빨간색)
-      this.ui.addMiniNotification(`${statusMsg}: ${resName} 채집 실패!`, 'failure');
+      this.ui.addMiniNotification(`${statusMsg}: ${resName} Harvest Failed!`, 'failure');
     } else if (type === 'research') {
       this.state.researchPoints += finalAmount;
     }
@@ -270,13 +270,13 @@ class App {
 
     if ((type === 'logging' || type === 'farming') && Math.random() < finalMoodProb) {
         const events = [
-            { msg: "신비로운 꽃을 발견하여 정착민들이 잠시 기뻐합니다. (+5% 무드)", bonus: 5 },
-            { msg: "정착지 근처의 자연경관을 감상하며 정신을 가다듬습니다. (+3% 무드)", bonus: 3 },
-            { msg: "기분 좋은 바람이 불어와 작업 효율이 올랐습니다. (+2% 무드)", bonus: 2 }
+            { msg: "Finding mysterious flowers briefly cheers up the colonists. (+5% Mood)", bonus: 5 },
+            { msg: "Refreshing their minds while admiring the local scenery. (+3% Mood)", bonus: 3 },
+            { msg: "A pleasant breeze has increased work efficiency. (+2% Mood)", bonus: 2 }
         ];
         const evt = events[Math.floor(Math.random() * events.length)];
         s.mood = Math.min(100, (s.mood || 0) + evt.bonus);
-        this.ui.addMiniNotification(`[무드 보너스] ${evt.msg}`, 'jackpot');
+        this.ui.addMiniNotification(`[Mood Bonus] ${evt.msg}`, 'jackpot');
     }
 
     // [New] 약초 발견 로직 (기초 5% + 업그레이드 레벨당 2% 추가 확률)
@@ -286,7 +286,7 @@ class App {
     if ((type === 'logging' || type === 'farming') && Math.random() < herbFinalProb) {
         const amount = Math.floor(Math.random() * 3) + 1; 
         s.herbalMedicine += amount;
-        this.ui.addMiniNotification(`귀중한 야생 약초를 발견했습니다! (약초 +${amount})`, "info");
+        this.ui.addMiniNotification(`Valuable wild herbs discovered! (Herbal Medicine +${amount})`, "info");
     }
   }
 
@@ -404,10 +404,10 @@ class App {
       // [Hidden] 판매 33회 달성 시 전설의 꽁치검 지급
       this.state.totalSellCount++;
       if (this.state.totalSellCount === 33) {
-          const result = GachaSystem.createSpecificWeapon('전설의 꽁치검', 'legendary', 'None');
+          const result = GachaSystem.createSpecificWeapon('Ancient Fish Sword', 'legendary', 'None');
           const event = {
-              name: "정착지의 전설: 판매왕",
-              desc: "당신은 무려 33개의 유닛을 팔아치우는 냉혹한 효율을 보여주었습니다! \n\n그 미친듯한 거래 능력에 감탄한 상인들이 전설의 무기 '전설의 꽁치검'을 선물로 보냈습니다.",
+              name: "Settlement Legend: Sales King",
+              desc: "You have shown ruthless efficiency by selling no less than 33 units! \n\nAmazed by your trading skills, merchants have sent the legendary weapon 'Ancient Fish Sword' as a gift.",
               type: 'positive'
           };
           if (this.encounterManager) this.encounterManager.showEventModal(event);
@@ -416,7 +416,7 @@ class App {
       }
 
       SoundManager.playBuy();
-      this.ui.addMiniNotification(`${u.weaponName} 판매 완료 (+${price} 은) [누적 ${this.state.totalSellCount}회]`);
+      this.ui.addMiniNotification(`${u.weaponName} Sold (+${price} Silver) [Total ${this.state.totalSellCount}]`);
       this.ui.updateDisplays(this.state);
       return true;
     }
@@ -434,7 +434,7 @@ class App {
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
     } else {
-      this.ui.addMiniNotification("은화가 부족합니다! (1,000 은 필요)", "failure");
+      this.ui.addMiniNotification("Not enough Silver! (1,000 Silver required)", "failure");
     }
   }
 
@@ -449,7 +449,7 @@ class App {
       this.ui.updateDisplays(this.state);
       if (this.tutorial) this.tutorial.trigger('buy_unit');
     } else {
-      this.ui.addMiniNotification("은화가 부족합니다! (50 은 필요)", "failure");
+      this.ui.addMiniNotification("Not enough Silver! (50 Silver required)", "failure");
     }
   }
 
@@ -461,11 +461,11 @@ class App {
     if (this.state.jade >= 1) {
         this.state.spendResource('jade', 1);
         this.state.silver += 250;
-        this.ui.addMiniNotification(`비취옥 1개 환전 완료 (+250 은)`, 'jackpot');
+        this.ui.addMiniNotification(`Jade x1 Exchanged (+250 Silver)`, 'jackpot');
         SoundManager.playBuy();
         this.ui.updateDisplays(this.state);
     } else {
-        this.ui.addMiniNotification("환전할 비취옥이 부족합니다!", 'failure');
+        this.ui.addMiniNotification("Not enough Jade to exchange!", 'failure');
     }
   }
 
@@ -521,7 +521,7 @@ class App {
     if (this.isItemTargeting) {
         this.isItemTargeting = false;
         this.pendingItemId = null;
-        this.ui.addMiniNotification("아이템 사용 취소");
+        this.ui.addMiniNotification("Item usage cancelled");
     } else if (this.placementMode) {
         this.cancelPlacement();
         if (this.tutorial) this.tutorial.show(); // 배치 취소 시 다시 표시
@@ -547,7 +547,7 @@ class App {
     if (this.tutorial) this.tutorial.hide();
 
     // UI 알림
-    this.ui.addMiniNotification(`배치 준비: ${gachaResult.weaponName} (${gachaResult.quality})`, "info");
+    this.ui.addMiniNotification(`Ready to deploy: ${gachaResult.weaponName} (${gachaResult.quality})`, "info");
     
     // [Safety] 0.1초간 클릭 무시 (버튼 잔상 방지)
     this.inputLock = true;
@@ -561,7 +561,7 @@ class App {
     if (this.tutorial && !this.tutorial.isActionAllowed('place_unit')) return;
     // 실제 배치를 확정하는 순간에 파업 체크
     if (this.encounterManager && this.encounterManager.isStrikeActive()) {
-        this.ui.addMiniNotification("아직 파업이 끝나지 않았습니다! 배치를 완료할 수 없습니다.", "failure");
+        this.ui.addMiniNotification("The strike is not over yet! Deployment cannot be completed.", "failure");
         return; // pendingGachaResult를 지우지 않고 유지함
     }
 
@@ -593,7 +593,7 @@ class App {
         this.state.mood = Math.min(100, this.state.mood + moodBonus[grade]);
     }
 
-    this.ui.showNotification("배치 완료", `${tower.weaponName}이(가) 전장에 배치되었습니다.`, grade);
+    this.ui.showNotification("Deployment Complete", `${tower.weaponName} has been deployed to the battlefield.`, grade);
 
     // [Tutorial] 유닛 배치 감지
     if (this.tutorial) this.tutorial.trigger('place_unit');
@@ -625,11 +625,11 @@ class App {
             const amount = 1 + Math.floor(Math.random() * 3);
             const finalSilver = Math.floor(amount * silMul);
             s.silver += finalSilver;
-            lootMsg = `은화 +${finalSilver}`;
+            lootMsg = `Silver +${finalSilver}`;
         } else if (rand < 0.85) { // 35% ~ 85% (50%)
             const amount = 1 + Math.floor(Math.random() * 3); // 1, 2, 3 (평균 2)
             s.addResource('food', amount);
-            lootMsg = `식량 +${amount}`;
+            lootMsg = `Food +${amount}`;
         }
     } else if (type === 'mech') {
         // 은화 35%, 강철 40%, 플라스틸 20%
@@ -637,15 +637,15 @@ class App {
             const amount = 2 + Math.floor(Math.random() * 5);
             const finalSilver = Math.floor(amount * silMul);
             s.silver += finalSilver;
-            lootMsg = `은화 +${finalSilver}`;
+            lootMsg = `Silver +${finalSilver}`;
         } else if (rand < 0.75) {
             const amount = 2 + Math.floor(Math.random() * 2);
             s.addResource('steel', amount);
-            lootMsg = `강철 +${amount}`;
+            lootMsg = `Steel +${amount}`;
         } else if (rand < 0.95) {
             const amount = 2 + Math.floor(Math.random() * 2);
             s.addResource('plasteel', amount);
-            lootMsg = `플라스틸 +${amount}`;
+            lootMsg = `Plasteel +${amount}`;
         }
 
         // [New/Fix] 현대 교육 기반 부품(Component) 추가 획득 로직 (기계 처치 시에만 발동)
@@ -654,7 +654,7 @@ class App {
         if (Math.random() < compProb) {
             const amount = (eduLv >= 3) ? (1 + Math.floor(Math.random() * 2)) : 1; 
             s.addResource('component', amount);
-            const compTxt = `부품 +${amount}`;
+            const compTxt = `Component +${amount}`;
             lootMsg = lootMsg ? `${lootMsg}, ${compTxt}` : compTxt;
         }
     }
@@ -693,20 +693,20 @@ class App {
           if (loot.jade) s.addResource('jade', loot.jade);
           if (loot.component) s.addResource('component', loot.component);
 
-          bossLoot = `은화+${loot.silver}, 연구+${loot.research}, 부품+${loot.component} 외 자원 세트`;
+          bossLoot = `Silver+${loot.silver}, Research+${loot.research}, Component+${loot.component} and resource set`;
       } else {
           // 정의되지 않은 라운드 보스일 경우 (기본 보상)
           s.addResource('steel', 20);
           s.addResource('component', 2);
-          bossLoot = `강철+20, 부품+2`;
+          bossLoot = `Steel+20, Component+2`;
       }
 
       s.mood = Math.min(100, s.mood + 15); // 보스 처치 무드 회복 상향
-      this.ui.addMiniNotification(`[처치] 보스 전리품: ${bossLoot}`, "jackpot");
+      this.ui.addMiniNotification(`[Kill] Boss Loot: ${bossLoot}`, "jackpot");
       SoundManager.playSuccess();
     } else if (lootMsg) {
       // 모든 전리품 획득 시 [전리품] 태그와 함께 알림
-      this.ui.addMiniNotification(`[전리품] ${lootMsg}`);
+      this.ui.addMiniNotification(`[Loot] ${lootMsg}`);
     }
   }
 
@@ -714,23 +714,23 @@ class App {
     console.log(`[Wave] ${this.state.waveNumber} 완료!`);
     // [New] 웨이브 클리어 시 무드 보너스 +7
     this.state.mood = Math.min(100, this.state.mood + 7);
-    this.ui.addMiniNotification(`웨이브 ${this.state.waveNumber} 클리어! 정착민 무드 +7%`, "info");
+    this.ui.addMiniNotification(`Wave ${this.state.waveNumber} Clear! Colonist Mood +7%`, "info");
 
     // [New] 100라운드 클리어 시 승리 처리 (인카운터 모달 -> 결과창 연동)
     if (this.state.waveNumber >= 100) {
         setTimeout(() => {
-            const victoryText = `이제 인공지능은 가장 안전한 방향으로 우주선을 이끌 겁니다. 운이 좋다면 그저 같은 태양계 안에 있는 좀 더 번영한 행성에 도착하는 것으로 짧은 여행을 끝마칠 겁니다. 어쩌면 다른 별을 향해 수 세기 동안 항해할 수도 있습니다. 최악의 경우 엄청난 세월이 흐르는 동안 그저 소행성의 얼음층 아래에 숨어 근처에 새로운 문명이 건설되기를 기다릴지도 모릅니다.\n\n깨어나면 알 수 있겠지요.`;
+            const victoryText = `Now the AI will guide the ship in the safest direction possible. If you're lucky, your short journey will end by arriving at a more prosperous planet within the same solar system. Or you might sail toward another star for centuries. In the worst case, you might simply hide under an asteroid's ice layer for ages, waiting for a new civilization to be built nearby.\n\nYou'll know when you wake up.`;
             
             const victoryEvent = {
                 id: 'victory',
-                name: "보스를 처치해 우주선이 안전하게 탈출했습니다",
+                name: "The ship has safely escaped after defeating the bosses",
                 desc: victoryText,
                 type: 'positive'
             };
 
             // 인카운터 모달을 먼저 띄우고, 확인 버튼 누르면 최종 결과창 표시
             this.encounterManager.showEventModal(victoryEvent, () => {
-                this.handleGameOver("정착지 방어 성공! 모든 위협으로부터 살아남았습니다.", true);
+                this.handleGameOver("Settlement Defended Successfully! Survived all threats.", true);
             });
             
             SoundManager.playSuccess();
@@ -880,27 +880,27 @@ class App {
     if (timedOutBoss) {
         const bName = timedOutBoss.name || "";
         
-        if (bName.includes('암흑 모노리스')) {
+        if (bName.includes('Dark Monolith')) {
             timedOutBoss.active = false;
-            this.applyVoidPunishment("처치 실패");
-        } else if (bName.includes('알파 트럼보')) {
+            this.applyVoidPunishment("Failed to destroy");
+        } else if (bName.includes('Alpha Thrumbo')) {
             timedOutBoss.active = false;
             this.handleAlphaThrumboFailure();
-        } else if (bName.includes('제국 근위대')) {
+        } else if (bName.includes('Imperial Guard')) {
             timedOutBoss.active = false;
             this.handleImperialGuardFailure();
-        } else if (bName.includes('머팔로')) {
+        } else if (bName.includes('Muffalo')) {
             // [Bug Fix] 상단 습격 머팔로는 탈출하더라도 게임 오버가 아님
             timedOutBoss.active = false;
             // 탈출 성공(유저 실패) 시 배상 청구 로직은 Enemy.js의 onRaidTimeout에서 이미 호출됨
         } else {
-            this.handleGameOver(`보스 처치 제한 시간(${timedOutBoss.bossTimerMax}초)이 초과되었습니다!`);
+            this.handleGameOver(`Boss time limit (${timedOutBoss.bossTimerMax}s) exceeded!`);
         }
     }
 
     // [Bug Fix] 적의 수가 100마리를 넘으면 게임 오버
     if (this.enemies.length >= 100) {
-        this.handleGameOver("적의 수가 너무 많아 기지가 함락되었습니다! (100마리 도달)");
+        this.handleGameOver("Too many enemies, the base has fallen! (Reached 100 enemies)");
     }
 
     // [New] 특수 히든 레시피 체크
@@ -908,13 +908,13 @@ class App {
   }
 
   /**
-   * [Hidden Penalty] 공허의 응징 (모노리스 거절 또는 처치 실패 시)
+   * [Hidden Penalty] Void Punishment (Monolith refusal or kill failure)
    */
-  applyVoidPunishment(reason = "거절") {
+  applyVoidPunishment(reason = "Refusal") {
     const s = this.state;
     const results = [];
 
-    if (reason === "거절") {
+    if (reason === "Refusal") {
         // [거절] 가벼운 제물 패널티: 은화와 강철 일부 소실
         const silverLoss = Math.floor(s.silver * 0.2); // 현재 자산의 20%
         const steelLoss = Math.floor(s.steel * 0.2);
@@ -922,14 +922,14 @@ class App {
         s.silver = Math.max(0, s.silver - silverLoss);
         s.steel = Math.max(0, s.steel - steelLoss);
         
-        if (silverLoss > 0) results.push(`• 은화: -${silverLoss}`);
-        if (steelLoss > 0) results.push(`• 강철: -${steelLoss}`);
+        if (silverLoss > 0) results.push(`• Silver: -${silverLoss}`);
+        if (steelLoss > 0) results.push(`• Steel: -${steelLoss}`);
         
-        const report = `당신은 공허의 부름을 거부하고 제물을 바쳐 그들을 달랬습니다. \n정착민들은 무사히 넘겼지만 자산의 일부를 소실했습니다. \n\n[소실 내역]\n${results.length > 0 ? results.join('\n') : "소실된 자산 없음"}`;
+        const report = `You have rejected the call of the Void and appeased them by sacrificing offerings. \nThe colonists escaped safely, but lost some of their assets. \n\n[Loss Details]\n${results.length > 0 ? results.join('\n') : "No assets lost"}`;
         
         if (this.encounterManager) {
             this.encounterManager.showEventModal({
-                name: "🌑 공허의 공물",
+                name: "🌑 Void Offering",
                 desc: report,
                 type: 'info'
             });
@@ -938,7 +938,7 @@ class App {
         return;
     }
 
-    // [처치 실패] 기존의 가혹한 기술 퇴행 패널티
+    // [Kill Failure] Severe technology regression penalty
     SoundManager.playSFX('assets/audio/Quest_Failed_01a.ogg');
     // 1. 파견/생산 기술 일괄 하락 (-1)
     const prodTypes = ['logging', 'mining', 'farming', 'trade', 'education', 'artisan'];
@@ -950,7 +950,7 @@ class App {
     prodTypes.forEach(type => {
         if ((s.upgrades[type] || 0) > 0) {
             s.upgrades[type]--;
-            results.push(`🛠️ ${koProd[type]} -1`);
+            results.push(`🛠️ ${type.charAt(0).toUpperCase() + type.slice(1)} -1`);
         }
     });
 
@@ -969,24 +969,24 @@ class App {
     }
 
     for (const [type, count] of Object.entries(lostCombat)) {
-        results.push(`⚔️ ${koCombat[type]} -${count}`);
+        results.push(`⚔️ ${type.charAt(0).toUpperCase() + type.slice(1)} -${count}`);
     }
 
     if (results.length > 0) {
-        this.ui.addMiniNotification(reason === "처치 실패" ? "공허를 막아내는 데 실패했습니다!" : "정착지의 지식이 공허 속으로 증발합니다!", "failure");
+        this.ui.addMiniNotification(reason === "Failed to destroy" ? "Failed to hold back the Void!" : "The settlement's knowledge evaporates into the Void!", "failure");
         
-        const title = reason === "처치 실패" ? "😱 공허의 역습" : "👁️ 공허의 응징";
-        const descPrefix = reason === "처치 실패" ? "모노리스를 파괴하지 못해 정착지가 오염되었습니다." : "공허의 부름을 모독한 대가로 정착민들의 의식이 뒤엉킵니다.";
+        const title = reason === "Failed to destroy" ? "😱 Void Counterattack" : "👁️ Void Punishment";
+        const descPrefix = reason === "Failed to destroy" ? "The base was contaminated as the monolith could not be destroyed." : "The colonists' consciousness becomes tangled as a price for desecrating the call of the Void.";
 
         if (this.encounterManager) {
             this.encounterManager.showEventModal({
                 name: title,
-                desc: `${descPrefix} \n쌓아올린 기술과 숙련도가 신기루처럼 사라졌습니다. \n\n` + results.join('\n'),
+                desc: `${descPrefix} \nStacked skills and proficiency vanished like a mirage. \n\n` + results.join('\n'),
                 type: 'negative'
             });
         }
     } else {
-        this.ui.addMiniNotification("공허의 기운이 조용히 물러납니다.", "info");
+        this.ui.addMiniNotification("The void energy quietly recedes.", "info");
     }
     
     this.ui.updateDisplays(s);
@@ -1025,25 +1025,24 @@ class App {
             }
             
             if (lostJobs.length > 0) {
-                const jobKo = { logging: '벌목', mining: '채광', farming: '농사', research: '연구', trading: '교역' };
-                const jobSummary = lostJobs.map(j => jobKo[j] || j).join(', ');
-                console.log(`[Death] 파견 인원 사망 발생: ${jobSummary}`);
+                const jobSummary = lostJobs.map(j => j.charAt(0).toUpperCase() + j.slice(1)).join(', ');
+                console.log(`[Death] Worker casualties: ${jobSummary}`);
             }
         }
 
         this.state.population -= actualLoss;
         this.state.updateFoodThreshold(); // 식량 요구량 재계산
         
-        this.ui.addMiniNotification(`알파 트럼보의 습격으로 정착민 ${actualLoss}명을 잃었습니다...`, "failure");
+        this.ui.addMiniNotification(`Lost ${actualLoss} colonists to the Alpha Thrumbo raid...`, "failure");
         if (this.encounterManager) {
             this.encounterManager.showEventModal({
-                name: "💀 비극: 사냥꾼들의 전멸",
-                desc: `날뛰는 알파 트럼보를 저지하지 못했습니다. 분노한 짐승은 정착지에 큰 상처를 남기고 사라졌으며, 이 과정에서 용감했던 정착민 ${actualLoss}명이 끔찍하게 목숨을 잃었습니다. \n\n(사망자 중 일부는 작업 현장에서 참변을 당했습니다.)`,
+                name: "💀 Tragedy: Hunter's Annihilation",
+                desc: `Failed to stop the rampaging Alpha Thrumbo. The enraged beast disappeared after leaving a deep scar on the settlement, and ${actualLoss} brave colonists lost their lives horribly in the process. \n\n(Some of the casualties met their end at the work site.)`,
                 type: 'negative'
             });
         }
     } else {
-        this.ui.addMiniNotification("알파 트럼보가 분노했지만 기적적으로 인명 피해는 없었습니다.", "info");
+        this.ui.addMiniNotification("The Alpha Thrumbo was enraged, but miraculously there were no casualties.", "info");
     }
     
     this.ui.updateDisplays(this.state);
@@ -1063,11 +1062,11 @@ class App {
     s.addResource('plasteel', -20);
     s.addResource('component', -5);
 
-    this.ui.addMiniNotification("제국의 징벌로 인해 막대한 자원을 몰수당했습니다.", "failure");
+    this.ui.addMiniNotification("Massive resources confiscated due to Imperial punishment.", "failure");
     if (this.encounterManager) {
         this.encounterManager.showEventModal({
-            name: "📉 제국의 분노: 징벌적 차압",
-            desc: "제국 근위대의 권위에 도전했으나 그들을 굴복시키지 못했습니다. 제국은 보복으로 정착지의 창고를 털어갔으며, 막대한 양의 은화와 핵심 부품들을 강제로 차압했습니다.",
+            name: "📉 Imperial Wrath: Punitive Forfeiture",
+            desc: "Challenged the authority of the Imperial Guard but failed to subdue them. The Empire retaliated by looting the settlement's storage, forcibly confiscating massive amounts of Silver and core components.",
             type: 'negative'
         });
     }
@@ -1079,15 +1078,15 @@ class App {
    * [Easter Egg] 특수 진화/히든 레시피 체크
    */
   checkSpecialEvolution() {
-    // 1. 999강 나무몽둥이: 맨손/목재 9개 + 목재 999개
+    // 1. 999 Wood Club: 9 Fists/Wood + 999 Wood
     const woodRes = this.state.wood || 0;
-    const bareHands = this.units.filter(u => u.weaponName === '맨손/목재' && !u.isBlueprint);
+    const bareHands = this.units.filter(u => u.weaponName === 'Fists/Wood' && !u.isBlueprint);
 
     if (woodRes >= 999 && bareHands.length >= 9) {
         // [Trigger Event]
         const event = {
-            name: "전설의 999몽둥이 등장",
-            desc: "맨손을 극한으로 단련하여 마침내 경지에 이르렀습니다! \n\n9명의 정착민이 999개의 목재를 소모하여 전설적인 '999강 나무몽둥이'를 완성했습니다. \n(기존 정착민 9명은 이 무기에 영혼을 담아 사라졌습니다.)",
+            name: "Legendary 999 Wood Club Appears",
+            desc: "By training Fists/Wood to the extreme, you have finally reached the ultimate state! \n\n9 colonists consumed 999 Wood to complete the legendary '999 Wood Club'. \n(The original 9 colonists disappeared after infusing their souls into this weapon.)",
             type: 'positive'
         };
 
@@ -1100,7 +1099,7 @@ class App {
         let count = 0;
         // 유닛 목록에서 맨손/목재 9개 제거
         for (let i = this.units.length - 1; i >= 0; i--) {
-            if (this.units[i].weaponName === '맨손/목재' && !this.units[i].isBlueprint) {
+            if (this.units[i].weaponName === 'Fists/Wood' && !this.units[i].isBlueprint) {
                 this.units.splice(i, 1);
                 count++;
                 if (count >= 9) break;
@@ -1108,7 +1107,7 @@ class App {
         }
 
         // 히든 아이템 지급 (전설 품질 고정)
-        const result = GachaSystem.createSpecificWeapon('999강 나무몽둥이', 'legendary', '나무');
+        const result = GachaSystem.createSpecificWeapon('999 Wood Club', 'legendary', 'Wood');
         this.startPlacement(result);
 
         this.ui.updateDisplays(this.state);
@@ -1147,7 +1146,7 @@ class App {
         else if (targetUnit.weaponData.grade === 'Uncommon') cost = 300;
         
         if (this.state.researchPoints < cost) {
-            this.ui.addMiniNotification(`연구 포인트가 부족합니다! (${cost} 필요)`, "failure");
+            this.ui.addMiniNotification(`Not enough research points! (${cost} required)`, "failure");
             return;
         }
 
@@ -1208,23 +1207,23 @@ class App {
             if (result) {
                 SoundManager.playSFX('assets/audio/제작.ogg');
                 this.startPlacement(result);
-                this.ui.showNotification("조합 성공!", `새로운 ${result.weaponData.grade} 등급 무기 획득! 마우스로 배치하세요.`, result.weaponData.grade);
+                this.ui.showNotification("Combine Success!", `Obtained a new ${result.weaponData.grade} grade weapon! Deploy it with your mouse.`, result.weaponData.grade);
             }
         } else {
             SoundManager.playSFX('assets/audio/failure.mp3');
             this.state.combinationFailCount++;
-            this.ui.showNotification("조합 실패", `${name} 4개가 전부 파괴되었습니다... (누적 실패: ${this.state.combinationFailCount}회)`, 'failure');
+            this.ui.showNotification("Combine Failed", `All 4 ${name} were destroyed... (Total failures: ${this.state.combinationFailCount})`, 'failure');
 
-            // [Hidden] 조합 실패 7회 달성 시 '시원한 은행가는 길' 지급
+            // [Hidden] 'Cool Banker's Way' given after 7 combination failures
             if (this.state.combinationFailCount === 7) {
                 const event = {
-                    name: "실패의 결실: 운명의 보상",
-                    desc: "당신은 무려 7번의 장비 파괴를 겪으면서도 굴하지 않고 계속해서 도전했습니다! \n\n당신의 끈기에 감동한 운명의 여신이 강력한 히든 병기 '시원한 은행가는 길'을 당신에게 선사했습니다.",
+                    name: "Fruit of Failure: Reward of Fate",
+                    desc: "You have continued to challenge yourself despite going through as many as 7 equipment destructions! \n\nAmazed by your persistence, the Goddess of Fate has presented you with the powerful hidden weapon 'Cool Banker's Way'.",
                     type: 'positive'
                 };
                 if (this.encounterManager) this.encounterManager.showEventModal(event);
                 
-                const result = GachaSystem.createSpecificWeapon('시원한 은행가는 길', 'Hidden', 'None');
+                const result = GachaSystem.createSpecificWeapon("Cool Banker's Way", 'Hidden', 'None');
                 this.startPlacement(result);
                 SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
             }
@@ -1237,7 +1236,7 @@ class App {
         
     } catch (e) {
         console.error("Combination Error:", e);
-        this.ui.addMiniNotification("조합 중 오류가 발생했습니다!", "failure");
+        this.ui.addMiniNotification("An error occurred during combination!", "failure");
     }
   }
 
@@ -1253,12 +1252,12 @@ class App {
     const msgEl = document.getElementById('result-message');
     
     if (isVictory) {
-        if (titleEl) titleEl.textContent = "정착지 방어 성공";
-        if (msgEl) msgEl.textContent = reason || "모든 위협으로부터 살아남았습니다!";
+        if (titleEl) titleEl.textContent = "Settlement Defended Successfully";
+        if (msgEl) msgEl.textContent = reason || "Survived all threats!";
         SoundManager.playSFX('assets/audio/긍정적랜덤인카운터.ogg');
     } else {
-        if (titleEl) titleEl.textContent = "정착지 함락";
-        if (msgEl) msgEl.textContent = reason || "모든 정착민이 기지를 떠났습니다...";
+        if (titleEl) titleEl.textContent = "Settlement Fallen";
+        if (msgEl) msgEl.textContent = reason || "All colonists have left the base...";
         SoundManager.playSFX('assets/audio/bad_alert.mp3');
     }
     
@@ -1289,19 +1288,19 @@ class App {
             }]);
             
         if (error) {
-            console.error("Supabase 상세 에러:", {
-                메시지: error.message,
-                상세: error.details,
-                힌트: error.hint,
-                코드: error.code
+            console.error("Supabase Detailed Error:", {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code
             });
             throw error;
         }
 
-        this.ui.addMiniNotification("기록이 성공적으로 등록되었습니다!", "success");
+        this.ui.addMiniNotification("Record successfully registered!", "success");
         this.renderLeaderboard(); 
     } catch (e) {
-        this.ui.addMiniNotification("기록 등록 실패: " + (e.message || "알 수 없는 오류"), "failure");
+        this.ui.addMiniNotification("Record registration failed: " + (e.message || "Unknown error"), "failure");
     }
   }
 
@@ -1312,7 +1311,7 @@ class App {
     const listContainer = document.getElementById(containerId);
     if (!listContainer || !supabase) return;
 
-    listContainer.innerHTML = '<div class="loading-msg">데이터 불러오는 중...</div>';
+    listContainer.innerHTML = '<div class="loading-msg">Loading data...</div>';
 
     try {
         const { data, error } = await supabase
@@ -1325,7 +1324,7 @@ class App {
         if (error) throw error;
 
         if (!data || data.length === 0) {
-            listContainer.innerHTML = '<div class="loading-msg">첫 번째 정착민이 되어보세요!</div>';
+            listContainer.innerHTML = '<div class="loading-msg">Be the first colonist!</div>';
             return;
         }
 
@@ -1333,10 +1332,10 @@ class App {
             <table class="leaderboard-table">
                 <thead>
                     <tr>
-                        <th class="rank-col">순위</th>
-                        <th>닉네임</th>
-                        <th>웨이브</th>
-                        <th class="score-col">정착지 위력 점수</th>
+                        <th class="rank-col">Rank</th>
+                        <th>Nickname</th>
+                        <th>Wave</th>
+                        <th class="score-col">Settlement Power Score</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1346,7 +1345,7 @@ class App {
             html += `
                 <tr>
                     <td class="rank-col">${index + 1}</td>
-                    <td>${row.name || '익명'}</td>
+                    <td>${row.name || 'Anonymous'}</td>
                     <td>W${row.wave}</td>
                     <td class="score-col">${(row.score || 0).toLocaleString()}</td>
                 </tr>
@@ -1357,8 +1356,8 @@ class App {
         listContainer.innerHTML = html;
 
     } catch (e) {
-        console.error("리더보드 로드 에러 상세:", e);
-        listContainer.innerHTML = `<div class="loading-msg" style="color:#ff6b6b">로드 실패: ${e.message}</div>`;
+        console.error("Leaderboard load error detail:", e);
+        listContainer.innerHTML = `<div class="loading-msg" style="color:#ff6b6b">Load failed: ${e.message}</div>`;
     }
   }
 
@@ -1439,12 +1438,12 @@ class App {
   useItem(type) {
     if (this.state.isPaused) return;
     if ((this.state.items[type] || 0) <= 0) {
-        this.ui.addMiniNotification("아이템이 부족합니다!", "failure");
+        this.ui.addMiniNotification("Not enough items!", "failure");
         return;
     }
 
     if (this.state.itemCooldowns[type] > 0) {
-        this.ui.addMiniNotification(`재사용 대기중! (${Math.ceil(this.state.itemCooldowns[type])}초)`, "failure");
+        this.ui.addMiniNotification(`On cooldown! (${Math.ceil(this.state.itemCooldowns[type])}s)`, "failure");
         return;
     }
 
@@ -1454,10 +1453,10 @@ class App {
         targets.forEach(en => {
             en.flashTimer = 0.5;
             // 즉사 로직 (보상 처리 포함) - 8번째 인자에 isItem=true 전달하여 기록 제외
-            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Legendary', 0, true, '궤도 폭격', true);
+            const died = en.takeDamage(99999999, 1.0, 'instakill', 'Legendary', 0, true, 'Orbital Strike', true);
             if (died) this.handleEnemyDeath(en);
         });
-        this.ui.addMiniNotification("궤도 폭격 가동!", "Legendary");
+        this.ui.addMiniNotification("Orbital Strike Active!", "Legendary");
         SoundManager.playSFX('assets/audio/특수무기사용시/궤도폭격.ogg');
         this.state.items[type]--;
         this.state.itemCooldowns[type] = ITEM_DB[type].cooldown || 60;
@@ -1468,8 +1467,8 @@ class App {
     // 그 외 투척류 아이템은 지점 타겟팅 모드로 진입
     this.isItemTargeting = true;
     this.pendingItemId = type;
-    const actionName = type === 'go_juice' ? '투약' : '타격';
-    this.ui.addMiniNotification(`[${type}] ${actionName} 위치를 선택하세요. (우클릭 취소)`, "info");
+    const actionName = type === 'go_juice' ? 'Administer' : 'Target';
+    this.ui.addMiniNotification(`[${type}] Select ${actionName} position. (Right-click to cancel)`, "info");
   }
 
   /**
@@ -1482,38 +1481,38 @@ class App {
     const cost = costs[type];
 
     if (s[type] < cost) {
-        this.ui.addMiniNotification("자원이 부족합니다!", "failure");
+        this.ui.addMiniNotification("Not enough resources!", "failure");
         return;
     }
 
     s[type] -= cost;
     const rand = Math.random();
-    let result = { msg: "정제 실패: 쓸모없는 찌꺼기만 남았습니다.", grade: "info" };
+    let result = { msg: "Refining Failed: Only useless slag remains.", grade: "info" };
 
     if (type === 'wood') {
         // 목재 도박 (1% 잭팟 추가)
-        if (rand < 0.01) { s.silver += 1000; result = { msg: "[정제 잭팟] 나무 속의 보물을 발견했습니다! (+1000 은)", grade: "Mythic" }; }
-        else if (rand < 0.06) { s.component += 1; result = { msg: "목재 정제 중 부품 발견! (+1 부품)", grade: "Legendary" }; }
-        else if (rand < 0.16) { s.uranium += 3; result = { msg: "심층 우라늄 조각 채취 (+3 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.36) { s.plasteel += 10; result = { msg: "목재 성분에서 플라스틸 정제 (+10 플라스틸)", grade: "Uncommon" }; }
-        else if (rand < 0.51) { s.steel += 40; result = { msg: "불순물을 제거해 강철 확보 (+40 강철)", grade: "Common" }; }
+        if (rand < 0.01) { s.silver += 1000; result = { msg: "[Refining Jackpot] Found hidden treasure inside the wood! (+1000 Silver)", grade: "Mythic" }; }
+        else if (rand < 0.06) { s.component += 1; result = { msg: "Found a component while refining wood! (+1 Component)", grade: "Legendary" }; }
+        else if (rand < 0.16) { s.uranium += 3; result = { msg: "Extracted deep uranium fragments (+3 Uranium)", grade: "Rare" }; }
+        else if (rand < 0.36) { s.plasteel += 10; result = { msg: "Refined Plasteel from wood components (+10 Plasteel)", grade: "Uncommon" }; }
+        else if (rand < 0.51) { s.steel += 40; result = { msg: "Secured Steel by removing impurities (+40 Steel)", grade: "Common" }; }
     } else if (type === 'steel') {
         // 강철 도박 (1% 잭팟 추가)
-        if (rand < 0.01) { s.silver += 2000; result = { msg: "[분해 잭팟] 정밀 기계 부품 뭉치를 팔았습니다! (+2000 은)", grade: "Mythic" }; }
-        else if (rand < 0.06) { s.jade += 1; result = { msg: "공업용 비취 결정 발견! (+1 비취)", grade: "Legendary" }; }
-        else if (rand < 0.16) { s.component += 2; result = { msg: "추출된 정밀 부품 (+2 부품)", grade: "Epic" }; }
-        else if (rand < 0.36) { s.uranium += 6; result = { msg: "농축 우라늄 추출 성공 (+6 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.66) { s.plasteel += 20; result = { msg: "강철을 분해해 플라스틸 확보 (+20 플라스틸)", grade: "Uncommon" }; }
+        if (rand < 0.01) { s.silver += 2000; result = { msg: "[Disassembly Jackpot] Sold a bundle of precision machinery parts! (+2000 Silver)", grade: "Mythic" }; }
+        else if (rand < 0.06) { s.jade += 1; result = { msg: "Found industrial-grade Jade crystal! (+1 Jade)", grade: "Legendary" }; }
+        else if (rand < 0.16) { s.component += 2; result = { msg: "Extracted precision components (+2 Components)", grade: "Epic" }; }
+        else if (rand < 0.36) { s.uranium += 6; result = { msg: "Successful extraction of enriched Uranium (+6 Uranium)", grade: "Rare" }; }
+        else if (rand < 0.66) { s.plasteel += 20; result = { msg: "Secured Plasteel by disassembling Steel (+20 Plasteel)", grade: "Uncommon" }; }
     } else if (type === 'silver') {
         // 은화 도박 (암시장 거래: 소모 300)
-        if (rand < 0.01) { s.silver += 1500; result = { msg: "[암시장 잭팟] 대박 거래 성사! (+1500 은)", grade: "Mythic" }; }
-        else if (rand < 0.06) { s.component += 1; result = { msg: "암시장에서 부품을 구매했습니다. (+1 부품)", grade: "Legendary" }; }
-        else if (rand < 0.20) { s.uranium += 4; result = { msg: "비밀 거래로 우라늄 입수 (+4 우라늄)", grade: "Rare" }; }
-        else if (rand < 0.45) { s.plasteel += 12; result = { msg: "암시장 플라스틸 거래 성공 (+12 플라스틸)", grade: "Uncommon" }; }
+        if (rand < 0.01) { s.silver += 1500; result = { msg: "[Black Market Jackpot] Successful big trade! (+1500 Silver)", grade: "Mythic" }; }
+        else if (rand < 0.06) { s.component += 1; result = { msg: "Purchased components from the black market. (+1 Component)", grade: "Legendary" }; }
+        else if (rand < 0.20) { s.uranium += 4; result = { msg: "Obtained Uranium through a secret deal (+4 Uranium)", grade: "Rare" }; }
+        else if (rand < 0.45) { s.plasteel += 12; result = { msg: "Successful Plasteel trade on the black market (+12 Plasteel)", grade: "Uncommon" }; }
     }
 
     const isSuccess = result.grade !== 'info';
-    const title = isSuccess ? (type === 'silver' ? "암시장 거래 성공" : "자원 정제 성공") : (type === 'silver' ? "암시장 거래 실패" : "자원 정제 실패");
+    const title = isSuccess ? (type === 'silver' ? "Black Market Success" : "Resource Refining Success") : (type === 'silver' ? "Black Market Failure" : "Resource Refining Failure");
     const displayGrade = isSuccess ? result.grade : 'failure';
     
     this.ui.showNotification(title, result.msg, displayGrade);
@@ -1602,7 +1601,7 @@ class App {
                 // Enemy.js 로직상 stunTimer > 0 일 때 bossTimer(제한시간) 감소가 자동으로 중단됨
                 if (en.isBoss) {
                     en.stunTimer = 15.0;
-                    this.ui.addMiniNotification("보스 무력화! (제한 시간 일시 정지)", "Legendary");
+                    this.ui.addMiniNotification("Boss Stunned! (Timer Paused)", "Legendary");
                 } else {
                     en.stunTimer = 5.0;
                 }
@@ -1671,7 +1670,7 @@ class App {
     }
 
     const itemName = item.name || type;
-    const suffix = type === 'go_juice' ? '투약' : '투척';
+    const suffix = type === 'go_juice' ? 'Administered' : 'Thrown';
     this.ui.addMiniNotification(`${itemName} ${suffix}!`, "info");
     
     this.state.items[type]--;
@@ -1710,7 +1709,7 @@ class App {
     const tower = this.units[randomIndex];
     
     // 타워 제거 및 알림
-    this.ui.addMiniNotification(`금단 증상으로 인해 [${tower.weaponName}] 타워가 파괴되었습니다!`, 'failure');
+    this.ui.addMiniNotification(`Withdrawal symptoms have destroyed [${tower.weaponName}]!`, 'failure');
     this.units.splice(randomIndex, 1);
   }
 
@@ -1719,7 +1718,7 @@ class App {
    */
   applyImperialBuff() {
     SoundManager.playSFX('assets/audio/Quest_Succeeded_01a.ogg');
-    this.ui.showNotification("근위대의 가호", "제국 근위대의 시련을 이겨냈습니다! 모든 아군의 공격 속도가 영구적으로 20% 상승합니다.", "Legendary");
+    this.ui.showNotification("Guard's Blessing", "You have overcome the trials of the Imperial Guard! Attack speed for all allies is permanently increased by 20%.", "Legendary");
     // GameState에 반영하거나 Tower.js에서 체크하도록 설정
     this.state.imperialBuff = true; 
     this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 스탯 재계산
@@ -1729,12 +1728,12 @@ class App {
    * [Hidden Reward] 알파 트럼보의 유산
    */
   grantThrumboHorn() {
-    const result = GachaSystem.createSpecificWeapon('알파 트럼보 뿔', 'legendary', 'None');
+    const result = GachaSystem.createSpecificWeapon('Alpha Thrumbo Horn', 'legendary', 'None');
     
     // 1. 화려한 보상 안내 모달 지원
     const eventData = {
-        name: "🔔 전설적인 승리: 알파의 유산",
-        desc: "최정예 사냥꾼들의 활약으로 마침내 '알파 트럼보'를 쓰러뜨렸습니다! \n\n시체 속에서 발견된 '알파 트럼보 뿔'은 그 자체로 현존하는 최강의 흉기가 될 것입니다. 이제 이 뿔을 정착지의 방어선에 배치하십시오.",
+        name: "🔔 Legendary Victory: Alpha's Legacy",
+        desc: "Through the efforts of the elite hunters, 'Alpha Thrumbo' has finally been defeated! \n\nThe 'Alpha Thrumbo Horn' found in the corpse will be the strongest lethal weapon in existence. Now place this horn on the settlement's defense line.",
         type: 'positive'
     };
     
@@ -1788,11 +1787,11 @@ class App {
     this.ui.updateDisplays(s);
     this.units.forEach(u => { if (u.setupStats) u.setupStats(); }); // 전투력 즉시 반영
 
-    const report = "공허의 지식이 정착민들의 의식 속에 직접 새겨졌습니다. \n정착지의 전투 및 생산 기술이 한 단계 진화했습니다! \n\n" + results.join('\n');
+    const report = "Void knowledge has been directly etched into the colonists' consciousness. \nThe settlement's combat and production techniques have evolved one step further! \n\n" + results.join('\n');
     
     if (this.encounterManager) {
         this.encounterManager.showEventModal({
-            name: "🌑 공허의 지식 흡수",
+            name: "🌑 Void Knowledge Absorption",
             desc: report,
             type: 'positive'
         });
@@ -1820,18 +1819,18 @@ class App {
       s.addResource('plasteel', plasteel);
       
       // [Log] 미니 알림 병행
-      this.ui.addMiniNotification(`강탈 성공! 은화+${silver}, 강철+${steel}...`, "Legendary");
+      this.ui.addMiniNotification(`Raid Success! Silver+${silver}, Steel+${steel}...`, "Legendary");
 
       // 3. 특수 전설 무기 지급
       const weaponGrades = ['Legendary', 'Mythic'];
       const grade = weaponGrades[Math.floor(Math.random() * weaponGrades.length)];
       const result = GachaSystem.drawSpecificGrade(grade, 0);
       
-      const report = `[전리품 목록]\n• 은화: ${silver}\n• 강철: ${steel}\n• 부품: ${component}\n• 플라스틸: ${plasteel}\n\n상단의 보물을 모두 탈취했습니다!`;
+      const report = `[Loot List]\n• Silver: ${silver}\n• Steel: ${steel}\n• Component: ${component}\n• Plasteel: ${plasteel}\n\nLooted all the treasures of the caravan!`;
       
       if (this.encounterManager) {
           this.encounterManager.showEventModal({
-              name: "💰 습격 대성공!",
+              name: "💰 Raid Mega Success!",
               desc: report,
               type: 'positive'
           });
@@ -1851,7 +1850,7 @@ class App {
       // 1. 은화 차감 (현재의 30%)
       const silverLoss = Math.floor(s.silver * 0.3);
       s.silver -= silverLoss;
-      if (silverLoss > 0) lossMsg.push(`• 은화: -${silverLoss}`);
+      if (silverLoss > 0) lossMsg.push(`• Silver: -${silverLoss}`);
       
       // 2. 다른 자원 중 하나를 무작위로 대량 차감
       const resources = ['steel', 'food', 'wood'];
@@ -1859,14 +1858,14 @@ class App {
       const currentAmount = s[target] || 0;
       const lossAmount = Math.floor(currentAmount * 0.4);
       s[target] -= lossAmount;
-      const targetName = target === 'steel' ? '강철' : (target === 'food' ? '식량' : '목재');
+      const targetName = target === 'steel' ? 'Steel' : (target === 'food' ? 'Food' : 'Wood');
       if (lossAmount > 0) lossMsg.push(`• ${targetName}: -${lossAmount}`);
 
-      const report = `상단이 무사히 탈출하여 제국에 신고했습니다!\n\n[피해 내역]\n${lossMsg.join('\n')}\n\n보복으로 인해 자원이 차감되었습니다.`;
+      const report = `The caravan escaped safely and reported to the Empire!\n\n[Damage Details]\n${lossMsg.join('\n')}\n\nResources were deducted as a retaliation.`;
       
       if (this.encounterManager) {
           this.encounterManager.showEventModal({
-              name: "⚖️ 배상 청구",
+              name: "⚖️ Claim for Indemnity",
               desc: report,
               type: 'negative'
           });
@@ -1881,7 +1880,7 @@ class App {
   triggerHowlingBladeReward() {
     console.log("[App] Triggering Howling Blade Reward Sequence...");
     try {
-        const result = GachaSystem.createSpecificWeapon('결속 단분자검', 'legendary', 'None');
+        const result = GachaSystem.createSpecificWeapon('Monomolecular Blade', 'legendary', 'None');
         
         // 1. 강제 일시정지 해제 및 배치 모드 설정
         this.state.isPaused = false;
@@ -1893,7 +1892,7 @@ class App {
             this.mousePos = { x: this.renderer.width / 2, y: this.renderer.height / 2 };
         }
 
-        this.ui.showNotification("피의 계약", "무기가 전장에 나타났습니다. 배치할 위치를 선택하세요.", "Legendary");
+        this.ui.showNotification("Blood Contract", "A weapon has appeared on the battlefield. Select a position to deploy.", "Legendary");
         this.ui.updateDisplays(this.state);
         
         console.log("[App] Placement Mode Active:", this.placementMode, this.pendingGachaResult);
@@ -1911,7 +1910,7 @@ class App {
     
     // 쿨타임 체크
     if (s.itemCooldowns.herbal_care > 0) {
-        this.ui.addMiniNotification(`약초 재사용 대기 중... (${Math.ceil(s.itemCooldowns.herbal_care)}초)`, "failure");
+        this.ui.addMiniNotification(`Herbal Medicine on cooldown... (${Math.ceil(s.itemCooldowns.herbal_care)}s)`, "failure");
         return;
     }
 
@@ -1928,12 +1927,12 @@ class App {
         s.itemCooldowns.herbal_care = 15;
 
         SoundManager.playSFX('assets/audio/BuyThing.ogg'); 
-        this.ui.addMiniNotification("약초 30개를 사용하여 무드를 25 회복했습니다!", "jackpot");
+        this.ui.addMiniNotification("Used 30 Herbal Medicine to restore 25 Mood!", "jackpot");
         this.ui.updateDisplays(s);
         
         console.log(`[Use] Herbs used. Remaining: ${s.herbalMedicine}, Current Mood: ${s.mood}`);
     } else {
-        this.ui.addMiniNotification(`약초가 부족합니다! (50개 필요, 현재: ${Math.floor(s.herbalMedicine)})`, "failure");
+        this.ui.addMiniNotification(`Not enough Herbal Medicine! (30 required, current: ${Math.floor(s.herbalMedicine)})`, "failure");
     }
   }
 
@@ -1946,7 +1945,7 @@ class App {
     
     // 쿨타임 체크
     if (s.itemCooldowns.financial_care > 0) {
-        this.ui.addMiniNotification(`금융치료 재사용 대기 중... (${Math.ceil(s.itemCooldowns.financial_care)}초)`, "failure");
+        this.ui.addMiniNotification(`Financial Therapy on cooldown... (${Math.ceil(s.itemCooldowns.financial_care)}s)`, "failure");
         return;
     }
 
@@ -1963,12 +1962,12 @@ class App {
         s.itemCooldowns.financial_care = 60;
 
         SoundManager.playSFX('assets/audio/BuyThing.ogg'); 
-        this.ui.addMiniNotification("금융치료 완료! 은화 300개를 사용하여 무드를 20 회복했습니다.", "jackpot");
+        this.ui.addMiniNotification("Financial Therapy complete! Used 300 Silver to restore 20 Mood.", "jackpot");
         this.ui.updateDisplays(s);
         
         console.log(`[Use] Financial therapy used. Remaining silver: ${s.silver}, Current Mood: ${s.mood}`);
     } else {
-        this.ui.addMiniNotification(`은화가 부족합니다! (300은 필요, 현재: ${Math.floor(s.silver)})`, "failure");
+        this.ui.addMiniNotification(`Not enough Silver! (300 required, current: ${Math.floor(s.silver)})`, "failure");
     }
   }
   /**
@@ -2095,7 +2094,7 @@ class App {
             if (selected.isCombinable) {
                 this.combineUnits(selected);
             } else {
-                this.ui.addMiniNotification("조합 가능한 유닛이 아닙니다.", "failure");
+                this.ui.addMiniNotification("This unit is not combinable.", "failure");
             }
         }
         return;
@@ -2131,7 +2130,7 @@ class App {
         } else if (this.placementMode) {
             this.placementMode = false;
             this.pendingGachaResult = null;
-            this.ui.addMiniNotification("배치를 취소했습니다.");
+            this.ui.addMiniNotification("Deployment cancelled.");
             if (this.tutorial) this.tutorial.show(); // 배치 취소 시 다시 표시
         } else if (this.units.some(u => u.selected) || this.enemies.some(en => en.selected)) {
             this.units.forEach(u => u.selected = false);
