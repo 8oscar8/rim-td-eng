@@ -14,7 +14,7 @@ export class SpriteManager {
       'Warhammer': 'assets/warhammer.webp',
       'Zeushammer': 'assets/zeushammer.webp',
       'Eltex Staff': 'assets/eltexstaff.webp',
-      'Sword': 'assets/sword.webp',
+      'Sword': 'assets/rimworld/검.webp',
       'Spear': 'assets/spear.webp',
       'Longsword': 'assets/longsword.webp',
       'Breach Axe': 'assets/breachaxe.webp',
