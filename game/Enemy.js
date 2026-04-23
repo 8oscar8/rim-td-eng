@@ -61,6 +61,7 @@ export class Enemy {
     this.selected = false;
     this.flashTimer = 0;
     this.bossHitCount = 0; // [New] 보스 피격 사운드 제어용 카운터
+    this.tynanStunImmunity = 0; // [New] 타이난 전용 스턴 면역 타이머
   }
 
   update(dt) {
@@ -73,6 +74,7 @@ export class Enemy {
     this.lastX = this.x;
 
     if (this.flashTimer > 0) this.flashTimer -= dt;
+    if (this.tynanStunImmunity > 0) this.tynanStunImmunity -= dt;
 
     // 재생 로직 처리 (기절 중이거나 독소 효과에 의해 억제될 수 있음)
     if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0 && this.stunTimer <= 0) {
@@ -299,14 +301,37 @@ export class Enemy {
       this.armor = Math.max(minArmor, this.armor - shred);
     }
 
+    const isTynan = (this.name === 'Tynan Sylvester' || this.name === '타이난');
+
+    // [Balance] 타이난(최종 보스) 전용 스턴 적응형 저항 시스템
+    // 정신충격창(psychic_stun)은 이 모든 제약을 무시하고 12초 풀스턴을 적용함
+    if (isTynan && effect !== 'psychic_stun' && effect !== null) {
+      if (this.tynanStunImmunity > 0) return; // 면역 상태면 스턴 무시
+
+      if (effect === 'stun' || effect === 'toxic_stun' || effect === 'frag_stun' || effect === 'emp' || effect.includes('knockback')) {
+        this.stunTimer = 0.5; // 모든 일반 스턴을 0.5초로 단축
+        this.tynanStunImmunity = 2.5; // 0.5초 스턴 + 2.0초 면역 (총 2.5초 주기)
+        
+        // 독성 데미지 등 부가 효과는 지속되도록 처리
+        if (effect === 'toxic_stun') {
+          this.activeDots.push({ damagePerSec: amount, duration: 6.0 });
+        }
+        return;
+      } else if (effect === 'stun_long') {
+        this.stunTimer = 1.0; // 전설의 꽁치검 등 긴 스턴은 1초
+        this.tynanStunImmunity = 3.5; // 1.0초 스턴 + 2.5초 면역
+        return;
+      }
+    }
+
     if (effect === 'stun') {
       this.stunTimer = 0.5;
     } else if (effect === 'psychic_stun') {
       this.stunTimer = 12.0; // 보스 포함 모든 적 12초 확정 기절
     } else if (effect === 'stun_long') {
       if (Math.random() < 0.3) { // 30% 확률로 스턴 발생
-        // [Balance] 최종 보스 타이난은 전설의 꽁치검 스턴 시간을 1초로 단축 (무한 스턴 방지)
-        this.stunTimer = (this.name === 'Tynan Sylvester' || this.name === '타이난') ? 1.0 : 5.0;
+        // [Balance] 최종 보스 타이난은 전설의 꽁치검 스턴 시간을 1초로 단축 (위에서 처리하지만 안전을 위해 유지)
+        this.stunTimer = isTynan ? 1.0 : 5.0;
       }
     } else if (effect === 'emp' && this.type === 'mech') {
       this.stunTimer = 6.0; // 기계류 전용 기절 상향
