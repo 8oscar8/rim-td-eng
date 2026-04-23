@@ -226,6 +226,11 @@ export class WaveManager {
     const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor, img);
     enemy.name = bossName;
 
+    // [New] 100라운드 보스 타이난 전용 초재생 수치 부여
+    if (bossName === '타이난') {
+        enemy.hpRegen = 36364; // 550초 동안 약 2,000만 HP 회복 (초당 36,364)
+    }
+
     const originalTakeDamage = enemy.takeDamage.bind(enemy);
     enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
       const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);

@@ -74,8 +74,8 @@ export class Enemy {
 
     if (this.flashTimer > 0) this.flashTimer -= dt;
 
-    // 재생 로직 처리 (독소 효과에 의해 억제될 수 있음)
-    if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0) {
+    // 재생 로직 처리 (기절 중이거나 독소 효과에 의해 억제될 수 있음)
+    if (this.hpRegen > 0 && this.hp < this.maxHp && this.toxinRegenBlock <= 0 && this.stunTimer <= 0) {
       this.hp = Math.min(this.maxHp, this.hp + this.hpRegen * dt);
     }
     
@@ -168,8 +168,8 @@ export class Enemy {
       }
     }
 
-    // 보스 제한 시간 차감 (550초)
-    if (this.isBoss && this.active) {
+    // 보스 제한 시간 차감 (550초) - 기절 중에는 시간이 멈춤
+    if (this.isBoss && this.active && this.stunTimer <= 0) {
       this.bossTimer -= dt;
       if (this.bossTimer <= 0) {
         this.bossTimer = 0;
@@ -300,6 +300,8 @@ export class Enemy {
 
     if (effect === 'stun') {
       this.stunTimer = 0.5;
+    } else if (effect === 'psychic_stun') {
+      this.stunTimer = 12.0; // 보스 포함 모든 적 12초 확정 기절
     } else if (effect === 'stun_long') {
       if (Math.random() < 0.3) { // 30% 확률로 스턴 발생
         // [Balance] 최종 보스 타이난은 전설의 꽁치검 스턴 시간을 1초로 단축 (무한 스턴 방지)
