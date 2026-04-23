@@ -227,7 +227,7 @@ export class WaveManager {
     enemy.name = bossName;
 
     // [New] 100라운드 보스 타이난 전용 초재생 수치 부여
-    if (bossName === '타이난') {
+    if (bossName === 'Tynan Sylvester' || bossName === '타이난') {
         enemy.hpRegen = 36364; // 550초 동안 약 2,000만 HP 회복 (초당 36,364)
     }
 

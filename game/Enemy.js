@@ -209,7 +209,7 @@ export class Enemy {
       }
     }
 
-    if (effect === 'max_hp_percent' && this.name !== '타이난') {
+    if (effect === 'max_hp_percent' && this.name !== 'Tynan Sylvester' && this.name !== '타이난') {
       finalDamage = (this.maxHp * 0.015) + amount;
     } else {
       // 트루 데미지일 경우 방어력 무시
@@ -305,7 +305,7 @@ export class Enemy {
     } else if (effect === 'stun_long') {
       if (Math.random() < 0.3) { // 30% 확률로 스턴 발생
         // [Balance] 최종 보스 타이난은 전설의 꽁치검 스턴 시간을 1초로 단축 (무한 스턴 방지)
-        this.stunTimer = (this.name === '타이난') ? 1.0 : 5.0;
+        this.stunTimer = (this.name === 'Tynan Sylvester' || this.name === '타이난') ? 1.0 : 5.0;
       }
     } else if (effect === 'emp' && this.type === 'mech') {
       this.stunTimer = 6.0; // 기계류 전용 기절 상향
