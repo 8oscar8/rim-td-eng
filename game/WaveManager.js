@@ -120,7 +120,7 @@ export class WaveManager {
             this.spawnBossEnemy(enemiesList);
           }
         } 
-        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted && enemiesList.length === 0) {
+        else if (this.enemiesToSpawn === 0 && this.bossToSpawn === 0 && !this.isWaveCompleted && enemiesList.length === 0) {
           this.isWaveCompleted = true;
           // [New] 최종 라운드 클리어 시 즉시 종료 처리 (카운트다운 방지)
           if (this.waveNumber >= this.maxWaves) {
@@ -181,15 +181,11 @@ export class WaveManager {
     
     const enemy = new Enemy(this.waypoints, this.currentEnemyHp, this.currentReward, type, false, armor, img);
     if (name) enemy.name = name;
-    const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-      // 8번째 인자인 isItem이 소실되지 않도록 원본 메서드에 그대로 전달
-      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-      if (died) {
-          this.enemiesKilledInWave++;
-          this.onEnemyDeath(enemy);
-      }
-      return died;
+    
+    // [New] 모든 사망 케이스(도트뎀 포함)를 포착하기 위해 onDie 콜백 사용
+    enemy.onDie = (e) => {
+        this.enemiesKilledInWave++;
+        this.onEnemyDeath(e);
     };
     
     // [New] 제국군 구간 (66~81라운드) 보호막 부여
@@ -226,20 +222,16 @@ export class WaveManager {
     const enemy = new Enemy(this.waypoints, bossHp, bossReward, type, true, armor, img);
     enemy.name = bossName;
 
+    // [New] 모든 사망 케이스를 포착하기 위해 onDie 콜백 사용
+    enemy.onDie = (e) => {
+        this.enemiesKilledInWave++;
+        this.onEnemyDeath(e);
+    };
+
     // [New] 100라운드 보스 타이난 전용 초재생 수치 부여
     if (bossName === 'Tynan Sylvester' || bossName === '타이난') {
         enemy.hpRegen = 36364; // 550초 동안 약 2,000만 HP 회복 (초당 36,364)
     }
-
-    const originalTakeDamage = enemy.takeDamage.bind(enemy);
-    enemy.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-      const died = originalTakeDamage(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-      if (died) {
-          this.enemiesKilledInWave++;
-          this.onEnemyDeath(enemy);
-      }
-      return died;
-    };
 
     // [New] 제국군 구간 (66~81라운드) 보스 보호막 부여
     if (this.waveNumber >= 66 && this.waveNumber <= 81) {
@@ -266,14 +258,11 @@ export class WaveManager {
         muffalo.name = '짐 실은 머팔로';
         muffalo.speed *= 0.6;
         
-        const originalDeath = muffalo.takeDamage.bind(muffalo);
-        muffalo.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-            if (died && typeof window.gameCore !== 'undefined') {
-                this.onEnemyDeath(muffalo);
+        muffalo.onDie = (e) => {
+            if (typeof window.gameCore !== 'undefined') {
+                this.onEnemyDeath(e);
                 window.gameCore.state.addResource('component', 2);
             }
-            return died;
         };
         document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: muffalo }));
     }
@@ -312,16 +301,13 @@ export class WaveManager {
     }
 
     if (boss) {
-        const originalDeath = boss.takeDamage.bind(boss);
-        boss.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-            if (died && window.gameCore) {
-                this.onEnemyDeath(boss);
+        boss.onDie = (e) => {
+            this.onEnemyDeath(e);
+            if (window.gameCore) {
                 if (type === 'ImperialGuard') window.gameCore.applyImperialBuff();
                 else if (type === 'AlphaThrumbo') window.gameCore.grantThrumboHorn();
                 else if (type === 'DarkMonolith') window.gameCore.applyVoidWisdomReward();
             }
-            return died;
         };
         document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: boss }));
     }
@@ -341,14 +327,9 @@ export class WaveManager {
       boss.shieldMax = baseHp * 0.15;
       boss.shield = boss.shieldMax;
       
-      const originalDeath = boss.takeDamage.bind(boss);
-      boss.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-          const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-          if (died && window.gameCore) {
-              this.onEnemyDeath(boss);
-              window.gameCore.applyImperialBuff(); // 성공 보상
-          }
-          return died;
+      boss.onDie = (e) => {
+          this.onEnemyDeath(e);
+          if (window.gameCore) window.gameCore.applyImperialBuff(); // 성공 보상
       };
       document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: boss }));
 
@@ -362,12 +343,7 @@ export class WaveManager {
           guard.shieldMax = baseHp * 0.05;
           guard.shield = guard.shieldMax;
           
-          const gDeath = guard.takeDamage.bind(guard);
-          guard.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
-              const d = gDeath(a, ap, e, s, sh, it, sn, item);
-              if (d) this.onEnemyDeath(guard);
-              return d;
-          };
+          guard.onDie = (e) => this.onEnemyDeath(e);
           
           document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: guard }));
           spawned++;
@@ -412,17 +388,12 @@ export class WaveManager {
             }
         };
 
-        const originalDeath = trumbo.takeDamage.bind(trumbo);
-        trumbo.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
-            const d = originalDeath(a, ap, e, s, sh, it, sn, item);
-            if (d) {
-                this.onEnemyDeath(trumbo);
-                trumbosLeft--;
-                if (trumbosLeft <= 0 && !anyEscaped) {
-                    if (window.gameCore) window.gameCore.handleCaravanRaidSuccess();
-                }
+        trumbo.onDie = (e) => {
+            this.onEnemyDeath(e);
+            trumbosLeft--;
+            if (trumbosLeft <= 0 && !anyEscaped) {
+                if (window.gameCore) window.gameCore.handleCaravanRaidSuccess();
             }
-            return d;
         };
 
         document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: trumbo }));
@@ -439,12 +410,7 @@ export class WaveManager {
         guard.speed *= 1.4;
         guard.armor += 50;
 
-        const gDeath = guard.takeDamage.bind(guard);
-        guard.takeDamage = (a, ap, e, s, sh, it, sn, item) => {
-            const d = gDeath(a, ap, e, s, sh, it, sn, item);
-            if (d) this.onEnemyDeath(guard);
-            return d;
-        };
+        guard.onDie = (e) => this.onEnemyDeath(e);
 
         document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: guard }));
         spawnedGuard++;
@@ -483,12 +449,7 @@ export class WaveManager {
         animal.level = this.waveNumber; // 레벨 정보 추가
         animal.speed *= 1.6; // 매우 빠름
         
-        const originalDeath = animal.takeDamage.bind(animal);
-        animal.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-            if (died) this.onEnemyDeath(animal);
-            return died;
-        };
+        animal.onDie = (e) => this.onEnemyDeath(e);
         
         document.dispatchEvent(new CustomEvent('spawnSpecial', { detail: animal }));
         
@@ -544,12 +505,7 @@ export class WaveManager {
         insect.radius = config.size; // size 대신 radius를 직접 설정해야 화면에 보입니다.
         insect.color = config.color;
 
-        const originalDeath = insect.takeDamage.bind(insect);
-        insect.takeDamage = (amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem) => {
-            const died = originalDeath(amount, ap, effect, shooterGrade, shred, isTrue, shooterName, isItem);
-            if (died) this.onEnemyDeath(insect);
-            return died;
-        };
+        insect.onDie = (e) => this.onEnemyDeath(e);
 
         const spawnEvent = new CustomEvent('spawnSpecial', { detail: insect });
         document.dispatchEvent(spawnEvent);

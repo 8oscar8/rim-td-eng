@@ -274,6 +274,7 @@ export class Enemy {
   die() {
     if (!this.active) return;
     this.active = false;
+    if (this.onDie) this.onDie(this);
 
     // 종족별 사망 사운드 분기
     if (this.type === 'mech') {

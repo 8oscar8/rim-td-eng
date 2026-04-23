@@ -481,7 +481,7 @@ class App {
     // 웨이브 매니저 실제 초기화
     this.waveManager = new WaveManager(
         this.waypoints,
-        (reward, isBoss) => this.handleEnemyDeath(reward, isBoss),
+        (enemy) => this.handleEnemyDeath(enemy),
         () => this.handleWaveComplete(),
         (num) => this.handleWaveStart(num)
     );
