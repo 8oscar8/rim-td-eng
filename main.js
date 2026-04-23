@@ -1083,8 +1083,9 @@ class App {
     const woodRes = this.state.wood || 0;
     const bareHands = this.units.filter(u => u.weaponName === 'Fists/Wood' && !u.isBlueprint);
 
-    if (woodRes >= 999 && bareHands.length >= 9) {
+    if (!this.state.has999WoodClub && woodRes >= 999 && bareHands.length >= 9) {
         // [Trigger Event]
+        this.state.has999WoodClub = true; // 중복 획득 방지
         const event = {
             name: "Legendary 999 Wood Club Appears",
             desc: "By training Fists/Wood to the extreme, you have finally reached the ultimate state! \n\n9 colonists consumed 999 Wood to complete the legendary '999 Wood Club'. \n(The original 9 colonists disappeared after infusing their souls into this weapon.)",

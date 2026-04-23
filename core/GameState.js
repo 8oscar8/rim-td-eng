@@ -50,6 +50,7 @@ export class GameState {
     this.gameTime = 0; // 총 플레이 시간 (초 단위)
     this.hiddenEventCount = 0; // 히든 인카운터 발생 횟수
     this.combinationFailCount = 0; // 조합 실패 횟수 (히든 레시피용)
+    this.has999WoodClub = false; // 999 나무몽둥이 획득 여부
 
     // 5. 작업 할당 및 진행률 (v2)
     this.workers = {
