@@ -309,8 +309,8 @@ export class Enemy {
       if (this.tynanStunImmunity > 0) return; // 면역 상태면 스턴 무시
 
       if (effect === 'stun' || effect === 'toxic_stun' || effect === 'frag_stun' || effect === 'emp' || effect.includes('knockback')) {
-        this.stunTimer = 1.0; // 모든 일반 스턴을 1.0초로 상향 (기존 0.5초)
-        this.tynanStunImmunity = 3.0; // 1.0초 스턴 + 2.0초 면역 (총 3.0초 주기)
+        this.stunTimer = 1.0; // 스턴 시간 1.0초로 상향
+        this.tynanStunImmunity = 2.5; // 전체 주기 2.5초 유지 (스턴 1.0초 + 면역 1.5초)
         
         // 독성 데미지 등 부가 효과는 지속되도록 처리
         if (effect === 'toxic_stun') {
