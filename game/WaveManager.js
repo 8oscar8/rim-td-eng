@@ -120,7 +120,7 @@ export class WaveManager {
             this.spawnBossEnemy(enemiesList);
           }
         } 
-        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted) {
+        else if (this.enemiesKilledInWave >= this.totalEnemiesInWave && !this.isWaveCompleted && enemiesList.length === 0) {
           this.isWaveCompleted = true;
           // [New] 최종 라운드 클리어 시 즉시 종료 처리 (카운트다운 방지)
           if (this.waveNumber >= this.maxWaves) {
